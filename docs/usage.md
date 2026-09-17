@@ -13,7 +13,7 @@ dxfnest info <file.dxf> [--unit UNIT] [--json]
 
 Exit codes: `0` parts found, `1` no nestable parts found, `2` usage error.
 
-## `dxfnest nest` — nest and export (milestone M3+)
+## `dxfnest nest` — nest and export
 
 ```bash
 dxfnest nest <file.dxf> [-o OUTDIR] [--strategy {symmetry,waste,both}]
@@ -32,8 +32,23 @@ dxfnest nest <file.dxf> [-o OUTDIR] [--strategy {symmetry,waste,both}]
 | `--edge-clearance` | `10.0` | min distance part → sheet edge |
 | `--rotation-step` | `90` | allowed rotation increment in degrees |
 | `--mirror` / `--no-mirror` | on | allow mirrored placements |
+| `--depth` | `2` | effort 1–5 (OptiNest-style calculation depth) |
 | `--pdf` | off | render sheet layouts to PDF |
 | `--report` | `both` | comparison report format (JSON / Markdown) |
+
+Output tree for `dxfnest nest job.dxf -o out/ --pdf`:
+
+```
+out/
+  job_symmetry-first.dxf     nested sheets, CNC-ready layers
+  job_waste-first.dxf
+  comparison_report.json     machine-readable (docs/report-schema.md)
+  comparison_report.md       human-readable side-by-side + recommendation
+  job_comparison.pdf         summary page + one page per unique sheet
+```
+
+Exit codes: `0` success, `1` no nestable parts / unplaced parts,
+`2` usage error.
 
 ### The spacing model
 
@@ -46,6 +61,19 @@ gap = tool_diameter + 2 × clearance
 
 (half is charged to each part during collision tests), and parts keep
 `edge_clearance` from the sheet boundary.
+
+## `dxfnest gui` — the web GUI
+
+```bash
+pip install -e ".[gui]"
+dxfnest gui [--host 0.0.0.0] [--port 8000]
+```
+
+Drop a DXF or pick an example, tweak the tooling settings, and run both
+strategies with one click. The result view shows summary cards, the full
+metric comparison, the recommendation with rationale, side-by-side to-scale
+sheet renderings (with part tooltips and labels) and download buttons for
+the DXFs, reports and PDF.
 
 ## How parts are detected in a DXF
 

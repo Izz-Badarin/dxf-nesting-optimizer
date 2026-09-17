@@ -1,0 +1,1076 @@
+{
+  "schema_version": 1,
+  "generated_by": "dxf-nesting-optimizer 0.1.0",
+  "job": {
+    "source_file": "examples/inputs/furniture_parts.dxf",
+    "dxf_version": "AC1032",
+    "unit": "millimeters",
+    "sheet": {
+      "width": 1220.0,
+      "height": 2440.0
+    },
+    "settings": {
+      "sheet": {
+        "width": 1220.0,
+        "height": 2440.0
+      },
+      "tool_diameter": 6.0,
+      "toolpath_clearance": 4.0,
+      "edge_clearance": 10.0,
+      "rotation_step_deg": 90.0,
+      "allow_mirror": true,
+      "curve_tolerance": 0.1,
+      "chain_tolerance": 0.5,
+      "calculation_depth": 2,
+      "unit": "mm",
+      "unit_override": null
+    },
+    "parts": {
+      "unique": 5,
+      "total_quantity": 18,
+      "total_area_mm2": 4656978.131
+    }
+  },
+  "strategies": {
+    "symmetry-first": {
+      "runtime_s": 0.007,
+      "metrics": {
+        "placed_count": 18,
+        "unplaced_count": 0,
+        "utilization_pct": 52.15,
+        "utilization_gross_pct": 53.38,
+        "waste_pct": 47.85,
+        "sheet_count": 3,
+        "unique_sheet_layouts": 3,
+        "copy_counts": [
+          1,
+          1,
+          1
+        ],
+        "replication_efficiency": 0.0,
+        "total_cut_length_mm": 36818.4,
+        "pierce_count": 34,
+        "rapid_travel_mm": 8507.7,
+        "direction_changes": 420,
+        "min_edge_clearance_mm": 10.0,
+        "skeleton_components": 3,
+        "skeleton_connected": true,
+        "common_line_opportunities": 0,
+        "runtime_s": 0.006898195999838208
+      },
+      "unplaced": [],
+      "sheets": [
+        {
+          "index": 1,
+          "copies": 1,
+          "placements": [
+            {
+              "part_id": "P004",
+              "name": "SIDE_PANEL",
+              "x": 10.0,
+              "y": 10.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P004",
+              "name": "SIDE_PANEL",
+              "x": 10.0,
+              "y": 824.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            }
+          ],
+          "offcuts": [
+            [
+              [
+                10.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                10.0
+              ],
+              [
+                610.0,
+                10.0
+              ],
+              [
+                610.0,
+                810.0
+              ],
+              [
+                10.0,
+                810.0
+              ],
+              [
+                10.0,
+                824.0
+              ],
+              [
+                610.0,
+                824.0
+              ],
+              [
+                610.0,
+                1624.0
+              ],
+              [
+                10.0,
+                1624.0
+              ],
+              [
+                10.0,
+                2430.0
+              ]
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "copies": 1,
+          "placements": [
+            {
+              "part_id": "P004",
+              "name": "SIDE_PANEL",
+              "x": 10.0,
+              "y": 10.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P004",
+              "name": "SIDE_PANEL",
+              "x": 10.0,
+              "y": 824.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P003",
+              "name": "KICK",
+              "x": 624.0,
+              "y": 824.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P003",
+              "name": "KICK",
+              "x": 738.0,
+              "y": 824.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 10.0,
+              "y": 1638.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 604.0,
+              "y": 1638.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            }
+          ],
+          "offcuts": [
+            [
+              [
+                10.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                10.0
+              ],
+              [
+                610.0,
+                10.0
+              ],
+              [
+                610.0,
+                810.0
+              ],
+              [
+                10.0,
+                810.0
+              ],
+              [
+                10.0,
+                824.0
+              ],
+              [
+                610.0,
+                824.0
+              ],
+              [
+                610.0,
+                1624.0
+              ],
+              [
+                10.0,
+                1624.0
+              ],
+              [
+                10.0,
+                1638.0
+              ],
+              [
+                590.0,
+                1638.0
+              ],
+              [
+                590.0,
+                2138.0
+              ],
+              [
+                10.0,
+                2138.0
+              ],
+              [
+                10.0,
+                2430.0
+              ]
+            ]
+          ]
+        },
+        {
+          "index": 3,
+          "copies": 1,
+          "placements": [
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 10.0,
+              "y": 10.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 604.0,
+              "y": 10.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 10.0,
+              "y": 524.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 604.0,
+              "y": 524.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P001",
+              "name": "DOOR",
+              "x": 10.0,
+              "y": 1038.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P001",
+              "name": "DOOR",
+              "x": 424.0,
+              "y": 1038.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P002",
+              "name": "DRAWER",
+              "x": 10.0,
+              "y": 1552.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P002",
+              "name": "DRAWER",
+              "x": 421.0,
+              "y": 1552.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P002",
+              "name": "DRAWER",
+              "x": 10.0,
+              "y": 1863.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P002",
+              "name": "DRAWER",
+              "x": 421.0,
+              "y": 1863.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            }
+          ],
+          "offcuts": [
+            [
+              [
+                10.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                10.0
+              ],
+              [
+                1184.0,
+                10.0
+              ],
+              [
+                1184.0,
+                510.0
+              ],
+              [
+                604.0,
+                510.0
+              ],
+              [
+                604.0,
+                10.0
+              ],
+              [
+                590.0,
+                10.0
+              ],
+              [
+                590.0,
+                510.0
+              ],
+              [
+                10.0,
+                510.0
+              ],
+              [
+                10.0,
+                524.0
+              ],
+              [
+                590.0,
+                524.0
+              ],
+              [
+                590.0,
+                1024.0
+              ],
+              [
+                10.0,
+                1024.0
+              ],
+              [
+                10.0,
+                1038.0
+              ],
+              [
+                410.0,
+                1038.0
+              ],
+              [
+                410.0,
+                1338.0
+              ],
+              [
+                409.74,
+                1348.29
+              ],
+              [
+                408.97,
+                1358.45
+              ],
+              [
+                407.7,
+                1368.46
+              ],
+              [
+                405.94,
+                1378.31
+              ],
+              [
+                403.7,
+                1387.98
+              ],
+              [
+                401.01,
+                1397.47
+              ],
+              [
+                397.86,
+                1406.77
+              ],
+              [
+                394.28,
+                1415.85
+              ],
+              [
+                390.28,
+                1424.71
+              ],
+              [
+                385.86,
+                1433.33
+              ],
+              [
+                381.05,
+                1441.71
+              ],
+              [
+                375.84,
+                1449.82
+              ],
+              [
+                370.27,
+                1457.66
+              ],
+              [
+                364.33,
+                1465.22
+              ],
+              [
+                358.04,
+                1472.48
+              ],
+              [
+                351.42,
+                1479.42
+              ],
+              [
+                344.48,
+                1486.04
+              ],
+              [
+                337.22,
+                1492.33
+              ],
+              [
+                329.66,
+                1498.27
+              ],
+              [
+                321.82,
+                1503.84
+              ],
+              [
+                313.71,
+                1509.05
+              ],
+              [
+                305.33,
+                1513.86
+              ],
+              [
+                296.71,
+                1518.28
+              ],
+              [
+                287.85,
+                1522.28
+              ],
+              [
+                278.77,
+                1525.86
+              ],
+              [
+                269.47,
+                1529.01
+              ],
+              [
+                259.98,
+                1531.7
+              ],
+              [
+                250.31,
+                1533.94
+              ],
+              [
+                240.46,
+                1535.7
+              ],
+              [
+                230.45,
+                1536.97
+              ],
+              [
+                220.29,
+                1537.74
+              ],
+              [
+                210.0,
+                1538.0
+              ],
+              [
+                199.71,
+                1537.74
+              ],
+              [
+                189.55,
+                1536.97
+              ],
+              [
+                179.54,
+                1535.7
+              ],
+              [
+                169.69,
+                1533.94
+              ],
+              [
+                160.02,
+                1531.7
+              ],
+              [
+                150.53,
+                1529.01
+              ],
+              [
+                141.23,
+                1525.86
+              ],
+              [
+                132.15,
+                1522.28
+              ],
+              [
+                123.29,
+                1518.28
+              ],
+              [
+                114.67,
+                1513.86
+              ],
+              [
+                106.29,
+                1509.05
+              ],
+              [
+                98.18,
+                1503.84
+              ],
+              [
+                90.34,
+                1498.27
+              ],
+              [
+                82.78,
+                1492.33
+              ],
+              [
+                75.52,
+                1486.04
+              ],
+              [
+                68.58,
+                1479.42
+              ],
+              [
+                61.96,
+                1472.48
+              ],
+              [
+                55.67,
+                1465.22
+              ],
+              [
+                49.73,
+                1457.66
+              ],
+              [
+                44.16,
+                1449.82
+              ],
+              [
+                38.95,
+                1441.71
+              ],
+              [
+                34.14,
+                1433.33
+              ],
+              [
+                29.72,
+                1424.71
+              ],
+              [
+                25.72,
+                1415.85
+              ],
+              [
+                22.14,
+                1406.77
+              ],
+              [
+                18.99,
+                1397.47
+              ],
+              [
+                16.3,
+                1387.98
+              ],
+              [
+                14.06,
+                1378.31
+              ],
+              [
+                12.3,
+                1368.46
+              ],
+              [
+                11.03,
+                1358.45
+              ],
+              [
+                10.26,
+                1348.29
+              ],
+              [
+                10.0,
+                1338.0
+              ],
+              [
+                10.0,
+                1552.0
+              ],
+              [
+                407.0,
+                1552.0
+              ],
+              [
+                407.0,
+                1849.0
+              ],
+              [
+                10.0,
+                1849.0
+              ],
+              [
+                10.0,
+                1863.0
+              ],
+              [
+                407.0,
+                1863.0
+              ],
+              [
+                407.0,
+                2160.0
+              ],
+              [
+                10.0,
+                2160.0
+              ],
+              [
+                10.0,
+                2430.0
+              ]
+            ]
+          ]
+        }
+      ]
+    },
+    "waste-first": {
+      "runtime_s": 0.04,
+      "metrics": {
+        "placed_count": 18,
+        "unplaced_count": 0,
+        "utilization_pct": 78.22,
+        "utilization_gross_pct": 80.08,
+        "waste_pct": 21.78,
+        "sheet_count": 2,
+        "unique_sheet_layouts": 2,
+        "copy_counts": [
+          1,
+          1
+        ],
+        "replication_efficiency": 0.0,
+        "total_cut_length_mm": 36818.4,
+        "pierce_count": 34,
+        "rapid_travel_mm": 11418.7,
+        "direction_changes": 420,
+        "min_edge_clearance_mm": 17.0,
+        "skeleton_components": 2,
+        "skeleton_connected": true,
+        "common_line_opportunities": 0,
+        "runtime_s": 0.03952598700016097
+      },
+      "unplaced": [],
+      "sheets": [
+        {
+          "index": 1,
+          "copies": 1,
+          "placements": [
+            {
+              "part_id": "P004",
+              "name": "SIDE_PANEL",
+              "x": 17.0,
+              "y": 17.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P004",
+              "name": "SIDE_PANEL",
+              "x": 17.0,
+              "y": 831.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P004",
+              "name": "SIDE_PANEL",
+              "x": 817.0,
+              "y": 1645.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 1131.0,
+              "y": 17.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 1131.0,
+              "y": 611.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P001",
+              "name": "DOOR",
+              "x": 1131.0,
+              "y": 1205.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P002",
+              "name": "DRAWER",
+              "x": 1128.0,
+              "y": 1619.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P003",
+              "name": "KICK",
+              "x": 817.0,
+              "y": 2259.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            }
+          ],
+          "offcuts": [
+            [
+              [
+                10.0,
+                10.0
+              ],
+              [
+                10.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                10.0
+              ],
+              [
+                10.0,
+                10.0
+              ]
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "copies": 1,
+          "placements": [
+            {
+              "part_id": "P004",
+              "name": "SIDE_PANEL",
+              "x": 17.0,
+              "y": 17.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 1131.0,
+              "y": 17.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 1131.0,
+              "y": 611.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 17.0,
+              "y": 831.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P005",
+              "name": "SHELF",
+              "x": 611.0,
+              "y": 1205.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P001",
+              "name": "DOOR",
+              "x": 17.0,
+              "y": 1345.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P002",
+              "name": "DRAWER",
+              "x": 431.0,
+              "y": 1719.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P002",
+              "name": "DRAWER",
+              "x": 17.0,
+              "y": 1859.0,
+              "rotation_deg": 0.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P002",
+              "name": "DRAWER",
+              "x": 1139.0,
+              "y": 1719.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            },
+            {
+              "part_id": "P003",
+              "name": "KICK",
+              "x": 817.0,
+              "y": 2170.0,
+              "rotation_deg": 90.0,
+              "mirrored": false
+            }
+          ],
+          "offcuts": [
+            [
+              [
+                10.0,
+                10.0
+              ],
+              [
+                10.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                2430.0
+              ],
+              [
+                1210.0,
+                10.0
+              ],
+              [
+                10.0,
+                10.0
+              ]
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "table": [
+      {
+        "metric": "Material utilization",
+        "key": "utilization_pct",
+        "symmetry-first": "52.1%",
+        "waste-first": "78.2%",
+        "better": "waste-first"
+      },
+      {
+        "metric": "Utilization (gross of kerf)",
+        "key": "utilization_gross_pct",
+        "symmetry-first": "53.4%",
+        "waste-first": "80.1%",
+        "better": "waste-first"
+      },
+      {
+        "metric": "Waste",
+        "key": "waste_pct",
+        "symmetry-first": "47.9%",
+        "waste-first": "21.8%",
+        "better": "waste-first"
+      },
+      {
+        "metric": "Sheets used",
+        "key": "sheet_count",
+        "symmetry-first": "3",
+        "waste-first": "2",
+        "better": "waste-first"
+      },
+      {
+        "metric": "Unique sheet layouts",
+        "key": "unique_sheet_layouts",
+        "symmetry-first": "3",
+        "waste-first": "2",
+        "better": "waste-first"
+      },
+      {
+        "metric": "Sheet replication efficiency",
+        "key": "replication_efficiency",
+        "symmetry-first": "0.00",
+        "waste-first": "0.00",
+        "better": null
+      },
+      {
+        "metric": "Parts placed",
+        "key": "placed_count",
+        "symmetry-first": "18",
+        "waste-first": "18",
+        "better": null
+      },
+      {
+        "metric": "Parts unplaced",
+        "key": "unplaced_count",
+        "symmetry-first": "0",
+        "waste-first": "0",
+        "better": null
+      },
+      {
+        "metric": "Total cut length",
+        "key": "total_cut_length_mm",
+        "symmetry-first": "36,818 mm",
+        "waste-first": "36,818 mm",
+        "better": null
+      },
+      {
+        "metric": "Pierce count",
+        "key": "pierce_count",
+        "symmetry-first": "34",
+        "waste-first": "34",
+        "better": null
+      },
+      {
+        "metric": "Rapid travel (est.)",
+        "key": "rapid_travel_mm",
+        "symmetry-first": "8,508 mm",
+        "waste-first": "11,419 mm",
+        "better": "symmetry-first"
+      },
+      {
+        "metric": "Direction changes",
+        "key": "direction_changes",
+        "symmetry-first": "420",
+        "waste-first": "420",
+        "better": null
+      },
+      {
+        "metric": "Min edge clearance",
+        "key": "min_edge_clearance_mm",
+        "symmetry-first": "10.0 mm",
+        "waste-first": "17.0 mm",
+        "better": "waste-first"
+      },
+      {
+        "metric": "Waste skeleton connected",
+        "key": "skeleton_connected",
+        "symmetry-first": "True",
+        "waste-first": "True",
+        "better": null
+      },
+      {
+        "metric": "Skeleton components",
+        "key": "skeleton_components",
+        "symmetry-first": "3",
+        "waste-first": "2",
+        "better": "waste-first"
+      },
+      {
+        "metric": "Common-line candidates",
+        "key": "common_line_opportunities",
+        "symmetry-first": "0",
+        "waste-first": "0",
+        "better": null
+      },
+      {
+        "metric": "Runtime",
+        "key": "runtime_s",
+        "symmetry-first": "0.01 s",
+        "waste-first": "0.04 s",
+        "better": "symmetry-first"
+      }
+    ],
+    "recommendation": {
+      "strategy": "waste-first",
+      "scores": {
+        "symmetry-first": 0.433,
+        "waste-first": 0.581
+      },
+      "weights": {
+        "utilization": 0.5,
+        "replication": 0.2,
+        "cnc": 0.3
+      },
+      "rationale": [
+        "waste-first needs 1 fewer sheet(s)",
+        "waste-first achieves 26.1 points higher utilization"
+      ]
+    }
+  }
+}

@@ -33,7 +33,10 @@ skin and the future web GUI will be another.
 | `nesting.nesting.symmetry_first` | mirrored/tiled pattern engine (M4) |
 | `nesting.analysis.metrics` | utilization, waste, sheet replication, CNC factors |
 | `nesting.analysis.compare` | side-by-side comparison + recommendation (M5) |
-| `nesting.analysis.report` | JSON/Markdown report writers (M5) |
+| `nesting.analysis.report` | JSON/Markdown report writers |
+| `nesting.nesting.common` | orientation variants, placement math, offcuts, identical-sheet merging, validation |
+| `nesting.nesting.heuristics` | MaxRects bin packing and true-shape bottom-left-fill |
+| `nesting.gui` | FastAPI web app + static single-page UI |
 
 ## Import pipeline (M1)
 
@@ -71,7 +74,8 @@ strategy must not differ).
 | M0 | scaffold: packaging, docs, CI, package skeleton | ✅ |
 | M1 | DXF import → validated `Part` model | ✅ |
 | M2 | geometry core: transforms, stitching, symmetry, part model | ✅ |
-| M3 | waste-first nesting (multi-sheet) + DXF export | 🔜 |
-| M4 | symmetry-first nesting + export | 🔜 |
-| M5 | metrics + comparison reports (JSON/MD) + PDF | 🔜 |
-| M6 | CLI polish, examples, full docs → tag v0.1.0 | 🔜 |
+| GUI | web GUI: drag-drop, side-by-side sheets, downloads | ✅ |
+| M3 | waste-first nesting (multi-sheet) + DXF export | ✅ |
+| M4 | symmetry-first nesting + export | ✅ |
+| M5 | metrics + comparison reports (JSON/MD) + PDF | ✅ |
+| M6 | CLI polish, examples, full docs → v0.1.0 | ✅ |

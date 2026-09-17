@@ -180,6 +180,46 @@ def mixed_curved(path: Path) -> None:
     doc.saveas(path)
 
 
+def batch(path: Path) -> None:
+    """A repeating production batch: many copies of few part types."""
+    doc = new_doc()
+    for name, color in (("BRACKET", 3), ("PANEL", 7), ("RING", 5)):
+        doc.layers.add(name, color=color)
+    msp = doc.modelspace()
+
+    # 40 L-brackets (loose lines, chain-stitched on import)
+    for i in range(40):
+        ox, oy = (i % 8) * 500.0, (i // 8) * 500.0
+        corners = [(0, 0), (300, 0), (300, 40), (40, 40), (40, 300), (0, 300)]
+        pts = [(ox + x, oy + y) for x, y in corners]
+        for a, b in zip(pts, pts[1:] + pts[:1], strict=True):
+            msp.add_line(a, b, dxfattribs={"layer": "BRACKET"})
+
+    # 24 panels with a handle hole
+    for i in range(24):
+        x, y = 4500 + (i % 6) * 500.0, (i // 6) * 400.0
+        msp.add_lwpolyline(
+            [
+                (x, y, 0, 0, 0),
+                (x + 400, y, 0, 0, 0),
+                (x + 400, y + 300, 0, 0, 0),
+                (x, y + 300, 0, 0, 0),
+            ],
+            close=True,
+            dxfattribs={"layer": "PANEL"},
+        )
+        msp.add_circle((x + 200, y + 250), 30, dxfattribs={"layer": "PANEL"})
+
+    # 12 rings
+    for i in range(12):
+        cx = 4500 + (i % 6) * 500.0
+        cy = 2000 + (i // 6) * 500.0
+        msp.add_circle((cx, cy), 150, dxfattribs={"layer": "RING"})
+        msp.add_circle((cx, cy), 90, dxfattribs={"layer": "RING"})
+
+    doc.saveas(path)
+
+
 def stress(path: Path) -> None:
     doc = new_doc()
     doc.layers.add("PARTS", color=7)
@@ -210,8 +250,9 @@ def main() -> None:
 
     furniture(args.out / "furniture_parts.dxf")
     mixed_curved(args.out / "mixed_curved.dxf")
+    batch(args.out / "repeating_batch.dxf")
     stress(args.out / "stress_many_parts.dxf")
-    print(f"generated 3 DXF files in {args.out}")
+    print(f"generated 4 DXF files in {args.out}")
 
 
 if __name__ == "__main__":

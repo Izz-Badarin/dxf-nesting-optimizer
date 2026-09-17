@@ -14,8 +14,17 @@ python examples/generate.py            # writes to examples/inputs/
 | `mixed_curved.dxf` | 2 rings, an L-bracket made of 6 loose lines, a capsule made of 2 lines + 2 arcs, 2 ellipses, a spline blob, a gear with 6 holes, a mirrored pair | chain stitching, curved entities, holes/islands, mirror pairs |
 | `stress_many_parts.dxf` | 400 mixed parts (rects, circles, rounded rects), seeded | performance |
 
-## Outputs (from milestone M3)
+## Outputs
 
-`nesting-output/` results of `dxfnest nest examples/inputs/furniture_parts.dxf`
-will be committed under `examples/outputs/` once the nesting engine lands:
-nested DXFs per strategy, PDF visualization and the comparison report.
+`examples/outputs/` contains committed results of
+`dxfnest nest <input> -o examples/outputs/<name> --pdf` for the furniture,
+mixed-curved and repeating-batch jobs: nested DXFs per strategy, the
+comparison reports (JSON + Markdown) and the PDF visualization.
+
+Reproduce with:
+
+```bash
+dxfnest nest examples/inputs/furniture_parts.dxf -o examples/outputs/furniture --pdf
+dxfnest nest examples/inputs/mixed_curved.dxf -o examples/outputs/mixed_curved --pdf
+dxfnest nest examples/inputs/repeating_batch.dxf -o examples/outputs/batch --pdf
+```
