@@ -15,6 +15,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from shapely.geometry import Polygon, box
+
 
 @dataclass(frozen=True)
 class SheetSpec:
@@ -83,3 +85,10 @@ class NestSettings:
     @property
     def usable_height(self) -> float:
         return self.sheet.height - 2.0 * self.edge_clearance
+
+    @property
+    def usable_rect(self) -> Polygon:
+        """The usable sheet region (sheet minus the edge-clearance margin)."""
+        sheet = self.sheet
+        ec = self.edge_clearance
+        return box(ec, ec, sheet.width - ec, sheet.height - ec)

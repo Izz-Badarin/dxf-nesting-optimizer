@@ -10,6 +10,7 @@ from shapely.geometry import Polygon
 
 from ..config import NestSettings
 from ..geometry.part import Part
+from ..geometry.polygon_utils import transform_polygon
 
 
 @dataclass
@@ -35,6 +36,14 @@ class Placement:
     @property
     def bounds(self) -> tuple[float, float, float, float]:
         return self.polygon.bounds
+
+    @property
+    def hole_polygons(self) -> list[Polygon]:
+        """The part's holes under the placement transform."""
+        return [
+            transform_polygon(hole, self.x, self.y, self.rotation_deg, self.mirrored)
+            for hole in self.part.holes
+        ]
 
 
 @dataclass
