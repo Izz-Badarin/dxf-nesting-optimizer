@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dxf-nesting-optimizer</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="1" y="1" width="22" height="22" rx="3" fill="#2563eb"/>
+        <rect x="4" y="4" width="6" height="9" rx="1" fill="#fff" opacity="0.95"/>
+        <rect x="12" y="4" width="8" height="5" rx="1" fill="#fff" opacity="0.7"/>
+        <rect x="12" y="11" width="4" height="9" rx="1" fill="#fff" opacity="0.85"/>
+      </svg>
+      <div>
+        <h1>dxf-nesting-optimizer</h1>
+        <p>Dual-strategy nesting with comparison &amp; recommendation</p>
+      </div>
+    </div>
+    <span class="badge" id="version-badge">v0.1.0</span>
+  </header>
+
+  <main>
+    <aside class="panel" id="config">
+      <section>
+        <h2><span class="step">1</span> Source</h2>
+        <div id="dropzone" class="dropzone">
+          <p><strong>Drop a .dxf file here</strong><br>or</p>
+          <label class="btn ghost" for="file-input">Browse file…</label>
+          <input type="file" id="file-input" accept=".dxf" hidden>
+          <p class="hint" id="file-name"></p>
+        </div>
+        <div class="examples">
+          <span class="label">… or try an example:</span>
+          <div id="example-buttons" class="chips"></div>
+        </div>
+      </section>
+
+      <section>
+        <h2><span class="step">2</span> Sheet &amp; tooling</h2>
+        <div class="field">
+          <label for="sheet-preset">Sheet preset</label>
+          <select id="sheet-preset">
+            <option value="1220x2440" selected>1220 × 2440 mm (default)</option>
+            <option value="2440x1220">2440 × 1220 mm (landscape)</option>
+            <option value="1220x1220">1220 × 1220 mm</option>
+            <option value="2500x1250">2500 × 1250 mm</option>
+            <option value="custom">Custom…</option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="sheet-width">Width (mm)</label>
+            <input type="number" id="sheet-width" value="1220" min="10" step="1">
+          </div>
+          <div class="field">
+            <label for="sheet-height">Height (mm)</label>
+            <input type="number" id="sheet-height" value="2440" min="10" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="tool-diameter">Tool Ø (mm)</label>
+            <input type="number" id="tool-diameter" value="6" min="0" step="0.5">
+          </div>
+          <div class="field">
+            <label for="clearance">Clearance (mm)</label>
+            <input type="number" id="clearance" value="4" min="0" step="0.5">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="edge-clearance">Edge margin (mm)</label>
+            <input type="number" id="edge-clearance" value="10" min="0" step="1">
+          </div>
+          <div class="field">
+            <label for="rotation-step">Rotation step</label>
+            <select id="rotation-step">
+              <option value="90" selected>90°</option>
+              <option value="45">45°</option>
+              <option value="30">30°</option>
+              <option value="180">180°</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field check">
+            <label><input type="checkbox" id="allow-mirror" checked> Allow mirrored parts</label>
+          </div>
+          <div class="field">
+            <label for="depth">Effort</label>
+            <select id="depth">
+              <option value="1">Fast</option>
+              <option value="2" selected>Balanced</option>
+              <option value="3">Thorough</option>
+            </select>
+          </div>
+        </div>
+        <p class="hint">Part gap = tool Ø + 2 × clearance = <strong id="gap-preview">14 mm</strong></p>
+      </section>
+
+      <button id="run" class="btn primary big">▶&nbsp; Run nesting</button>
+      <div id="status" class="status" hidden></div>
+    </aside>
+
+    <section id="results" hidden>
+      <div class="cards" id="summary-cards"></div>
+      <div id="recommendation" class="recommendation" hidden></div>
+      <div class="block">
+        <h2>Metric comparison</h2>
+        <div class="table-wrap">
+          <table id="comparison-table"></table>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-head">
+          <h2>Sheet layouts</h2>
+          <label class="toggle"><input type="checkbox" id="show-labels" checked> Part labels</label>
+        </div>
+        <div id="sheet-columns" class="sheet-columns"></div>
+      </div>
+      <div class="block">
+        <h2>Downloads</h2>
+        <div id="downloads" class="chips"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="tooltip" class="tooltip" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

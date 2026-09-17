@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # gui extra included so mypy can type-check nesting/gui with its real deps
+      - run: pip install -e ".[dev,gui]"
+      - run: ruff format --check src tests examples
+      - run: ruff check src tests examples
+      - name: Run mypy
+        run: |
+          set -o pipefail
+          mypy src | tee mypy-output.txt
+      - name: Report mypy output on failure
+        if: failure() && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT: ${{ github.sha }}
+        run: |
+          {
+            echo "mypy failed on $COMMIT:"
+            echo '```text'
+            cat mypy-output.txt
+            echo '```'
+          } > comment.md
+          gh pr comment "$NUMBER" --repo "$REPO" --body-file comment.md
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: pytest --cov=nesting --cov-report=term-missing -q
