@@ -13,6 +13,7 @@ INPUTS = Path(__file__).parents[1] / "examples" / "inputs"
 CASES = [
     ("furniture_parts.dxf", 5, 18, 0),
     ("mixed_curved.dxf", 6, 10, 0),
+    ("repeating_batch.dxf", 3, 70, 0),
     ("stress_many_parts.dxf", 100, 300, 0),
 ]
 
