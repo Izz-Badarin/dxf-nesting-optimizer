@@ -16,8 +16,15 @@ htmlcov/
 # Najjar Pro gadget outputs
 gadget/out/
 
-# local dev tooling (built Lua interpreter)
-tools/
+# dev tooling: scripts are committed, builds and reference clones are not
+tools/_lua-src/
+tools/_lua55-src/
+tools/_gadgets-*/
+tools/lua/
+tools/sdk/
+tools/*.vgadget
+tools/*.zip
 
 # shop-specific user defaults (keep the .example as reference)
 gadget/defaults.json
+tools/lua55-lua

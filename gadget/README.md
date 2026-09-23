@@ -1,4 +1,4 @@
-# Najjar Pro — gadget core (v0.6.0)
+# Najjar Pro — gadget core (v0.7.0)
 
 > **Every shop has a carpenter. Now it has Najjar Pro.**
 > كُلّ ورشة عندها نجّار — هلق كمان عندها Najjar Pro
@@ -96,6 +96,35 @@ front reveals. **Every spec is merged over it** (the spec wins), so a
 4-line spec inherits your whole shop configuration. `defaults.json` is
 gitignored; each machine keeps its own.
 
+## 3D viewer, dimension check & import (v0.7) ✨
+
+Every run now produces **`<project>_viewer.html`** — a fully
+self-contained interactive 3D view (no internet needed, works offline
+in any browser):
+
+- **drag to rotate**, scroll to zoom, Front / Isometric / Top buttons
+- **Explode slider** — pull the cabinet apart: sides out, back off,
+  doors and drawer boxes forward, every drawer on its own step
+- **clickable parts list** with real cut dimensions and edge-banding notes
+- **dimension check panel** — the same checks that print to the console:
+  part bigger than the board (error), fits-only-rotated (info), doors
+  too narrow, drawer fronts too low, drawer box taller than its front
+  opening, hinge count per door height, back groove over half the
+  panel thickness, unusual shelf setback
+
+**Bring configurations from other apps** (`convert.lua`):
+
+```
+lua convert.lua foreign-config.json my-spec.json --map importers/generic_flat.json
+lua convert.lua cutlist.csv            my-spec.json
+lua main.lua my-spec.json out en
+```
+
+A *map file* (`importers/*.json`) lists the field-name aliases of the
+other app — new app, new map, **no code changes**. A CSV cut list
+(English / Hebrew / Arabic headers) becomes a loose-parts project that
+runs through the same pipeline: BOM, DXF, preview, 3D viewer.
+
 ## The VCarve / Aspire gadget shell (v0.6) 🎯
 
 The installable gadget is ready: **`release/NajjarPro.vgadget`** (or build
@@ -121,8 +150,10 @@ shell files carry the required `-- VECTRIC LUA SCRIPT` marker.
 ⚠️ v0.6 is the shell spike: the API usage mirrors real public gadgets, but
 it has **not yet run inside a live VCarve** — that first-run test happens
 the moment a VCarve Pro license is available. The test-suite already
-covers everything short of it (545 assertions: syntax, dialog/field
-consistency, spec assembly, mock-render through a fake SDK).
+covers everything short of it (664 assertions: syntax, dialog/field
+consistency, spec assembly, mock-render through a fake SDK, 3D model,
+checks, import, viewer). The shell writes the 3D viewer + dimension
+checks next to the BOM/DXF in the gadget's `out/` folder.
 
 ## Run it (headless)
 
@@ -145,7 +176,7 @@ displays inches too.
 
 ```bash
 cd gadget
-lua tests/run_tests.lua     # 545 assertions
+lua tests/run_tests.lua     # 664 assertions
 ```
 
 ## Layout
@@ -232,6 +263,6 @@ signed off.**
 
 ## Roadmap
 
-v0.7 shell hardening (live VCarve test, multi-page wizard, hardware
-ToolPickers, toolpath templates per layer) → v0.8 licensing + website.
+v0.8 shell hardening (live VCarve test, multi-page wizard, hardware
+ToolPickers, toolpath templates per layer) → v0.9 licensing + website.
 See the product plan for milestones and business model.

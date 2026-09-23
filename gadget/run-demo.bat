@@ -55,14 +55,23 @@ echo ============================================
 
 echo.
 echo ============================================
+echo  Import demo: foreign config + cut list
+echo ============================================
+"%LUA%" convert.lua templates\foreign-demo.json out\imported.json --map importers\generic_flat.json
+"%LUA%" main.lua out\imported.json out en
+
+echo.
+echo ============================================
 echo  Opening previews in your browser...
 echo ============================================
+if exist "out\kitchen-mixed_viewer.html" start "" out\kitchen-mixed_viewer.html
 if exist "out\euro-base-900_preview.svg" start "" out\euro-base-900_preview.svg
 if exist "out\wardrobe-zones_preview.svg" start "" out\wardrobe-zones_preview.svg
 if exist "out\kitchen-mixed_preview.svg" start "" out\kitchen-mixed_preview.svg
 
 echo.
 echo Done!
+echo  - 3D viewer HTML    : rotate, zoom, EXPLODE slider, dimension check
 echo  - Preview SVG files : open in any browser
 echo  - BOM CSV files     : open in Excel
 echo  - DXF files         : import into ArtCAM / VCarve (Preserve Layers)

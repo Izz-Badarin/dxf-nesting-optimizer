@@ -1,0 +1,36 @@
+{
+  "id": "fusion_wardrobe",
+  "display": {
+    "en": "Fusion 360 wardrobe generator (TentGeo style)",
+    "he": "מחולל הארונות של Fusion 360 (סגנון TentGeo)",
+    "ar": "مولّد خزائن Fusion 360 (بنمط TentGeo)"
+  },
+  "units": {
+    "field": "units",
+    "values": { "mm": "mm", "cm": "mm", "in": "in", "inch": "in" }
+  },
+  "fields": {
+    "project": ["project", "name", "Project Name"],
+    "units": ["units", "unit"],
+    "panel_thickness": ["panel_thickness", "material_thickness", "board_thickness"],
+    "sheet_width": ["sheet_width"],
+    "sheet_height": ["sheet_length", "sheet_height"],
+    "cabinets": ["modules", "cabinets", "units"]
+  },
+  "cabinet": {
+    "id": ["name", "id", "module_name"],
+    "width": ["module_width", "width", "total_width"],
+    "height": ["total_height", "height"],
+    "depth": ["total_depth", "depth"],
+    "shelves": ["shelf_count", "shelves", "num_shelves"],
+    "doors": ["door_count", "doors", "num_doors"],
+    "drawers": ["drawer_count", "drawers", "num_drawers", "drawer_mode"]
+  },
+  "defaults": {
+    "back": "grooved",
+    "connector": "cabineo_12",
+    "shelf_pins": "shelf_pin_5",
+    "hinges": "hinge_cup_35",
+    "drawer_zone_height": 250
+  }
+}

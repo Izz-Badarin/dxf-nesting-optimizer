@@ -259,3 +259,55 @@ back groove (corner logic in v0.2), single shelf zone, mm-only BOM output.
 with reveal math, hinge + slide placement from the existing library data,
 groove drawing on side panels. In parallel: owner purchases VCarve Pro →
 SDK study → first gadget-shell spike.
+
+---
+
+## v0.7.0 — 3D viewer, dimension check, import (2026-09-23)
+
+**User directive:** "UPGRADE THE APP TO BE MORE USER FRIENDLY, TO BE SHOWN
+3D VIEW, EXPLODE MODE, ETC... GET CONFIGURATION FROM OTHER APP AND DO. AND
+ALSO CHECK THE DIMENSION."
+
+Four new core modules (all headless, all tested):
+
+- **`model3d.lua`** — builds a 3D box model from the decomposed panels:
+  sides/bottom/top/back/divider/shelves/doors/drawer fronts/drawer boxes,
+  each with a center, size, role color and an *explode vector* (sides ±x,
+  bottom −y, top +y, back +z, doors −1.35z, fronts −1.9z, drawer boxes a
+  −(0.45+i·0.28)z staircase, shelves +0.35z). `build_loose()` lays
+  imported parts out flat on the floor.
+- **`check.lua`** — dimension checker: part-vs-board (error / rotate info),
+  zero-size guard, narrow/low doors, low drawer fronts, box taller than
+  front opening, narrow boxes, hinge count per door height (info, from the
+  hardware library), back groove > half panel, deep shelf setback.
+  Emits `{level, code, params}` entries; main.lua prints them trilingually
+  and stores them in job.json.
+- **`viewer.lua`** — ONE self-contained HTML file: hand-written canvas 3D
+  engine (painter's algorithm, depth-sorted quads), drag-rotate,
+  wheel-zoom, front/iso/top buttons, explode slider 0–100, clickable parts
+  list with dims/edge notes, colored checks panel. No internet, no
+  libraries — opens offline in any browser.
+- **`importer.lua`** — `from_foreign(raw, map)` converts other apps' JSON
+  configs through **map files** (`importers/*.json`: field aliases, unit
+  values, defaults); `parse_cutlist_csv()` accepts cut-list CSVs with
+  EN/HE/AR headers and quoted materials; `loose_panels()` feeds imported
+  parts through the normal pipeline.
+
+New CLI: **`convert.lua`** (foreign JSON or CSV → Najjar spec → main.lua).
+main.lua grew a loose-parts mode, the dimension check and the viewer
+output; job.json now carries the check entries. The VCarve shell preloads
+the four new modules and writes `najjar_viewer.html` + check summary next
+to the BOM/DXF in the gadget `out/` folder.
+
+**Bugs found & fixed this round:** lang JSON corruption from the key
+insertion (trailing/missing commas, unescaped `"` in Hebrew — switched to
+״ gershayim), `gsub` returning two values into `tonumber` in the importer,
+Hebrew CSV width alias wrong (`לוח רוחב` → `רוחב`), single-cabinet import
+path warning spuriously, shelf rows with qty > 1 only rendering one shelf
+in 3D. Also: `tools/` was fully gitignored — the build/package scripts
+vanished on the sandbox re-clone; now only builds/reference clones are
+ignored and the scripts are committed.
+
+**664 assertions green on Lua 5.4.6 and 5.5.1** (545 → 664). Golden numbers
+for the v0.1–v0.6 pipeline unchanged and still asserted. Roadmap: v0.8 =
+shell hardening (live VCarve first-run), v0.9 = licensing + website.

@@ -30,6 +30,10 @@ local tests = {
   "test_project",
   "test_vectric",
   "test_gadget_shell",
+  "test_model3d",
+  "test_check",
+  "test_importer",
+  "test_viewer",
 }
 
 for _, t in ipairs(tests) do

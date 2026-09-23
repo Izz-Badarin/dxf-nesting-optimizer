@@ -1,0 +1,36 @@
+{
+  "id": "generic_flat",
+  "display": {
+    "en": "Generic flat config (width/height/depth + counts)",
+    "he": "קונפיגורציה גנרית שטוחה (רוחב/גובה/עומק + כמויות)",
+    "ar": "إعداد عام مسطح (عرض/ارتفاع/عمق + أعداد)"
+  },
+  "units": {
+    "field": "units",
+    "values": { "mm": "mm", "millimeter": "mm", "millimetre": "mm", "in": "in", "inch": "in", "inches": "in" }
+  },
+  "fields": {
+    "project": ["project", "name", "project_name", "job_name"],
+    "units": ["units", "unit", "measurement"],
+    "panel_thickness": ["panel_thickness", "thickness", "board_thickness", "material_thickness", "panelThickness"],
+    "sheet_width": ["sheet_width", "board_width", "sheetWidth"],
+    "sheet_height": ["sheet_height", "board_length", "board_height", "sheetHeight"],
+    "cabinets": ["cabinets", "modules", "units", "items", "boxes"]
+  },
+  "cabinet": {
+    "id": ["id", "name", "module_name", "label"],
+    "width": ["width", "total_width", "w", "cabinet_width", "Width"],
+    "height": ["height", "total_height", "h", "cabinet_height", "Height"],
+    "depth": ["depth", "total_depth", "d", "cabinet_depth", "Depth"],
+    "shelves": ["shelves", "shelf_count", "num_shelves", "shelvesCount"],
+    "doors": ["doors", "door_count", "num_doors", "doorsCount"],
+    "drawers": ["drawers", "drawer_count", "num_drawers", "drawersCount"]
+  },
+  "defaults": {
+    "back": "grooved",
+    "connector": "cabineo_12",
+    "shelf_pins": "shelf_pin_5",
+    "hinges": "hinge_cup_35",
+    "drawer_zone_height": 250
+  }
+}

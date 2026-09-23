@@ -192,6 +192,7 @@ function main(script_path)
   local core_files = {
     "version", "fs", "json", "merge", "i18n", "layers",
     "spec", "rules", "hardware", "geometry", "bom", "dxf", "svg", "vectric",
+    "model3d", "check", "viewer", "importer",
   }
   for _, name in ipairs(core_files) do
     local mod = "najjar." .. name
@@ -266,10 +267,12 @@ function main(script_path)
 
   -- 5. generate ----------------------------------------------------------------
   local all_panels = {}
+  local cabinet_jobs = {}
   for _, cab in ipairs(spec.cabinets) do
     local panels = rules.decompose(cab, spec)
     hwlib.place(lib, cab, panels)
     for _, p in ipairs(panels) do all_panels[#all_panels + 1] = p end
+    cabinet_jobs[#cabinet_jobs + 1] = { id = cab.id, panels = panels }
   end
   local parts = geom.build_parts(all_panels)
   geom.layout(parts)
@@ -288,11 +291,36 @@ function main(script_path)
     fs.mkdir(out_dir)
     local tr = require("najjar.i18n").load(base .. "/lang", lang)
     fs.writefile(out_dir .. "/najjar_bom.csv", bom.to_csv(bom.rows(parts), tr, spec.source_units))
-    local ok_dxf = require("najjar.dxf").write(out_dir .. "/najjar_parts.dxf", parts)
-    if ok_dxf then
-      DisplayMessageBox("Najjar Pro: parts drawn on layers.\n\n" ..
-                        "BOM + DXF saved to:\n" .. out_dir)
+    require("najjar.dxf").write(out_dir .. "/najjar_parts.dxf", parts)
+
+    -- dimension check (v0.7)
+    local check = require("najjar.check")
+    local entries = check.check(spec, parts, lib)
+    local cc = check.counts(entries)
+
+    -- interactive 3D viewer with explode (v0.7)
+    local model3d = require("najjar.model3d")
+    local viewer = require("najjar.viewer")
+    local boxes = {}
+    local ox = 0
+    for i, cab in ipairs(spec.cabinets) do
+      local cboxes = model3d.build_cabinet(cab, cabinet_jobs[i].panels, { x = ox, z = 0 }, spec)
+      for _, b in ipairs(cboxes) do boxes[#boxes + 1] = b end
+      ox = ox + cab.width + 150
     end
+    viewer.write(out_dir .. "/najjar_viewer.html", parts, boxes, entries,
+                 { title = spec.project, tr = tr })
+
+    local check_line
+    if cc.error + cc.warn > 0 then
+      check_line = string.format("\nDimension check: %d error(s), %d warning(s) - see the viewer.",
+                                 cc.error, cc.warn)
+    else
+      check_line = "\nDimension check: all clear."
+    end
+    DisplayMessageBox("Najjar Pro: parts drawn on layers.\n\n" ..
+                      "BOM + DXF + 3D viewer saved to:\n" .. out_dir ..
+                      check_line)
   end)
 
   local total_qty = 0

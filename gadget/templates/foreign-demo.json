@@ -1,0 +1,13 @@
+{
+  "name": "demo import",
+  "units": "mm",
+  "thickness": 18,
+  "sheet_width": 1220,
+  "sheet_height": 2440,
+  "cabinets": [
+    { "name": "TV-UNIT", "width": 1200, "height": 450, "depth": 400,
+      "doors": 2, "shelves": 1 },
+    { "name": "BOOKCASE", "width": 800, "height": 1800, "depth": 350,
+      "shelves": 5 }
+  ]
+}

@@ -59,9 +59,16 @@ scoop install lua        (Scoop)
 Double-click **`run-demo.bat`** in the `gadget` folder.
 
 It will:
-1. Run all **423 automatic tests** (must end with `423 passed, 0 failed`)
+1. Run all **664 automatic tests** (must end with `664 passed, 0 failed`)
 2. Generate all 3 demo cabinets (base, wardrobe, kitchen)
-3. Open the **previews in your browser**
+3. Convert a **foreign demo config** through the importer
+4. Open the **3D viewer and previews in your browser**
+
+**Try the 3D viewer** (`kitchen-mixed_viewer.html`):
+- drag to rotate, scroll to zoom
+- pull the **Explode slider** — the cabinet comes apart
+- click parts in the list to see their sizes
+- check the **dimension check panel** on the side
 
 To run a demo in **Arabic** or **Hebrew**, open a command prompt in the
 `gadget` folder and type (`lua55` or `lua54` — whatever you copied):
@@ -148,6 +155,29 @@ Send me (in any language — Arabic, Hebrew, English):
 1. The `MY-CABINET.json` file you wrote
 2. A screenshot of the BOM or the preview
 3. One sentence: "this number should be X because ..."
+
+---
+
+## Step 6.5 — Import a config from another app
+
+Have a cut list from another program? Convert it:
+
+```
+lua55 convert.lua cutlist.csv my-job.json
+lua55 main.lua my-job.json out en
+```
+
+Or a JSON config from another generator — with a map file that lists
+that app's field names:
+
+```
+lua55 convert.lua foreign.json my-job.json --map importers\generic_flat.json
+lua55 main.lua my-job.json out en
+```
+
+CSV headers work in English, Hebrew or Arabic
+(`width / רוחב / عرض`...). Send me any config that fails to convert and
+I will add a map file for that app.
 
 ---
 
