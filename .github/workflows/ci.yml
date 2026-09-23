@@ -64,6 +64,8 @@ jobs:
         run: lua5.4 gadget/tests/run_tests.lua
       - name: Package NajjarPro.vgadget
         run: sh tools/package-gadget.sh
+      - name: Package test zip
+        run: sh tools/package-test-zip.sh
       - name: Smoke test - generate demo cabinet in all languages
         run: |
           cd gadget

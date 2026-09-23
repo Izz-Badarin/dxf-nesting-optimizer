@@ -419,3 +419,25 @@ Goal: the deepest real-VCarve integration possible without a live license.
 
 Next per the owner's directive: **licensing** (offline keys, trial mode)
 after the live VCarve first-run.
+
+---
+
+## Test round preparation (2026-09-23, post-v0.10)
+
+**User directive:** "not yet for licensing, I want to test it — and we
+will plan the next upgrade of it."
+
+No product changes: this is the test-enablement round.
+
+- **`NajjarPro-0.10.0-test.zip`** (`gadget/release/`, built by
+  `tools/package-test-zip.sh`, CI packages it on every push): one
+  download with the whole runnable core, tests, templates, lang,
+  hardware, importers, docs, the installable `.vgadget`, and a new
+  **`START-HERE.md`** 10-minute test card (Lua install → run-demo →
+  own cabinet in Arabic → CSV import → the VCarve step when licensed,
+  plus what to send back).
+- `TESTING.md` Step 1 rewritten around the single zip (was: download the
+  branch zip and dig for `gadget/`); stale test count fixed (1246 →
+  1400).
+- Status: **licensing on hold** until the owner tests; next upgrade is
+  planned together with him after the test results arrive.

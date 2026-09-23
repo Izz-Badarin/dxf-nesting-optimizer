@@ -5,23 +5,23 @@ need VCarve, Aspire or any license to test the core.
 
 ---
 
-## Step 1 — Get the files
+## Step 1 — Get the files (one download)
 
-On your shop PC, open GitHub in a browser:
+In a browser, go to the repository **Izz-Badarin/dxf-nesting-optimizer**
+(branch `arena/01a0cd18-dxf-nesting-optimizer`), then open
+**`gadget` → `release`** and download:
 
-1. Go to the repository: **Izz-Badarin/dxf-nesting-optimizer**
-2. Click the branch button (it says `main` or a branch name) and select
-   the branch **`arena/01a0cd18-dxf-nesting-optimizer`**
-3. Click the green **`<> Code`** button → **Download ZIP**
-4. Extract the ZIP (right-click → Extract All)
+**`NajjarPro-0.10.0-test.zip`**
 
-Direct link (if it works in your browser):
+Right-click the downloaded file → **Extract All** → open the folder and
+read **`START-HERE.md`** (the 10-minute test card).
 
-```
-https://github.com/Izz-Badarin/dxf-nesting-optimizer/archive/refs/heads/arena/01a0cd18-dxf-nesting-optimizer.zip
-```
+Everything is inside that one zip: the full core, the test suite, the
+demo, your `MY-CABINET.json` worksheet, and `NajjarPro.vgadget` for the
+VCarve step later.
 
-Everything you need is inside the **`gadget/`** folder.
+(The fallback way still works: green `<> Code` button → Download ZIP →
+everything is in the `gadget/` folder.)
 
 ---
 
@@ -59,7 +59,7 @@ scoop install lua        (Scoop)
 Double-click **`run-demo.bat`** in the `gadget` folder.
 
 It will:
-1. Run all **1246 automatic tests** (must end with `1246 passed, 0 failed`)
+1. Run all **1400 automatic tests** (must end with `1400 passed, 0 failed`)
 2. Generate all 3 demo cabinets (base, wardrobe, kitchen)
 3. Convert a **foreign demo config** through the importer
 4. Open the **3D viewer and previews in your browser**
