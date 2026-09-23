@@ -25,6 +25,7 @@ function M.rows(parts)
       thickness = p.thickness,
       material = p.material,
       holes = nfeat * p.qty,
+      edge = (p.meta and p.meta.edge_banding) or "none",
       notes = tostring((p.meta and p.meta.note) or ""),
     }
   end
@@ -55,7 +56,7 @@ function M.to_csv(rows, tr, units)
   local headers = {
     tr("bom_id"), tr("bom_name"), tr("bom_qty"),
     tr("bom_w", { unit = units }), tr("bom_h", { unit = units }), tr("bom_t", { unit = units }),
-    tr("bom_material"), tr("bom_holes"), tr("bom_notes"),
+    tr("bom_material"), tr("bom_holes"), tr("bom_edge"), tr("bom_notes"),
   }
   local lines = { table.concat(headers, ",") }
   for _, r in ipairs(rows) do
@@ -68,6 +69,7 @@ function M.to_csv(rows, tr, units)
       fmt(r.thickness),
       csv_cell(r.material),
       tostring(r.holes),
+      csv_cell(tr("edge_" .. (r.edge or "none"))),
       csv_cell(r.notes),
     }, ",")
   end

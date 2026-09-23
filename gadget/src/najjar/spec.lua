@@ -102,6 +102,37 @@ function M.normalize(raw)
     end
   end
 
+  -- edge banding (which part edges get banding, per role) -------------------------
+  local EDGE_ROLES = {
+    side = true, bottom = true, top = true, back = true, shelf = true,
+    divider = true, door = true, front = true,
+    drawer_side = true, drawer_fb = true, drawer_bottom = true,
+  }
+  local EDGE_VALUES = { none = true, front = true, all = true }
+  local edge_banding = {
+    side = "none", bottom = "none", top = "none", back = "none",
+    shelf = "front", divider = "front",
+    door = "all", front = "all",
+    drawer_side = "front", drawer_fb = "front", drawer_bottom = "none",
+  }
+  if raw.edge_banding ~= nil then
+    if type(raw.edge_banding) ~= "table" then
+      err("err_edge_band", { role = "*" })
+    else
+      for role, v in pairs(raw.edge_banding) do
+        if not EDGE_ROLES[role] then
+          err("err_edge_role", { role = tostring(role) })
+        elseif v == json.null then
+          edge_banding[role] = "none"
+        elseif type(v) == "string" and EDGE_VALUES[v] then
+          edge_banding[role] = v
+        else
+          err("err_edge_band", { role = tostring(role) })
+        end
+      end
+    end
+  end
+
   -- front defaults (style + reveals) ------------------------------------------------
   -- raw (unscaled) values; cabinets inherit from spec, spec from built-ins
   local function apply_fronts(base_raw, f, where)
@@ -136,6 +167,7 @@ function M.normalize(raw)
     panel = panel,
     sheet = sheet,
     materials = materials,
+    edge_banding = edge_banding,
     fronts = fronts_default,
     cabinets = {},
   }
@@ -331,6 +363,15 @@ function M.normalize(raw)
                 zone.drawers.box_groove_depth = ((dr.box_groove_depth ~= nil) and dr.box_groove_depth or 6.0) * scale
                 zone.drawers.box_groove_y = ((dr.box_groove_y ~= nil) and dr.box_groove_y or 10.0) * scale
               end
+              -- corner joinery library reference (null disables)
+              local jn = dr.joinery
+              if jn == json.null then
+                jn = nil
+              elseif jn ~= nil and (type(jn) ~= "string" or #jn == 0) then
+                err("err_hw_name", { id = id, value = tostring(jn) })
+                jn = nil
+              end
+              zone.drawers.joinery = jn
             end
           end
 

@@ -1,5 +1,37 @@
 # Najjar Pro — Development Log
 
+## 2026-09-23 — v0.5.0: corner joinery, edge banding, projects & the Vectric adapter ✅
+
+**Built:**
+
+- **Drawer-box corner joinery** as hardware data: `corner_dowel_8`
+  (2 dowels per corner) and `corner_rafix_15` (knock-down) — face holes
+  land on the box sides as `DRILL_DOWEL` geometry; the mating EDGE holes
+  on the front/back panels (impossible to drill flat on a router) become
+  an `edge-drill Ø… ×…` BOM note for the horizontal drill. The library
+  carries positions, so a new fitting brand = a new JSON file
+- **Edge banding** per part role: built-in defaults (shelves/dividers
+  front, doors/fronts all, boxes front, carcass none), spec overrides
+  (`edge_banding`), validation, and a translated BOM column in all three
+  languages
+- **Multi-cabinet projects** (golden 4, `kitchen-job.json`): K1 + two
+  identical wall cabinets — parts merge across cabinets into single rows
+  with doubled qty (4 wall sides in one row), one project-wide cut list,
+  area and sheet estimate; the full job pipeline is deterministic
+- **`vectric.lua` — the Vectric adapter**: the core now renders through
+  a backend interface (`create_layer/polyline/circle/text`). The mock
+  backend records ops (golden-tested: 9 layers, 15 polylines, 161
+  circles, 13 texts for the kitchen); `real_backend()` is an explicit
+  stub that plugs in during the v0.6 shell work — the core will not
+  change when the SDK lands
+- Tests: 423 → **486 assertions** (green on first run again)
+
+**Next (v0.6):** the gadget shell — real Vectric backend + wizard
+dialogs + toolpath templates. Requires the owner's VCarve Pro license;
+until then the headless core is feature-complete and testable.
+
+---
+
 ## 2026-09-23 — v0.4.0: slide patterns, divider pins & box joinery ✅
 
 **Built:**

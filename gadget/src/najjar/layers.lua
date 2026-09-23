@@ -21,6 +21,7 @@ M.DEFAULT = {
   -- special machining
   LED_GROOVE    = 4,   -- cyan   : LED channel
   BOX_GROOVE    = 30,  -- orange : drawer box bottom groove
+  DRILL_DOWEL   = 36,  -- brown  : drawer box corner joinery (dowel / rafix)
   -- marking
   ETCH          = 2,   -- yellow : part labels, cabinet marks
   -- nesting-stage layers (used when sheets are exported later)
@@ -32,7 +33,7 @@ M.DEFAULT = {
 --- Order in which layers are documented/exported (deterministic).
 M.ORDER = {
   "CUT", "DRILL5_SHELF", "DRILL5_SHELF_FLIP", "DRILL_CABINEO", "POCKET_CABINEO",
-  "DRILL_HINGE", "DRILL_SLIDE", "LED_GROOVE", "BOX_GROOVE", "ETCH",
+  "DRILL_HINGE", "DRILL_SLIDE", "LED_GROOVE", "BOX_GROOVE", "DRILL_DOWEL", "ETCH",
   "OFFCUT", "CNC_BOUNDARY", "INFO",
 }
 

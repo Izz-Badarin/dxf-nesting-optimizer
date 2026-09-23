@@ -54,5 +54,11 @@
   "err_divider_gap": "ארון {id}: אזור {i} — מחיצות חופפות או קרובות מדי (צריך לפחות עובי מחיצה ביניהן)",
   "err_box_values": "ארון {id}: אזור {i} — ערכי תיבת המגירה חייבים להיות חיוביים ולהתאים לארון",
   "err_box_bottom": "ארון {id}: אזור {i} — drawers.bottom חייב להיות 'lay-in' או 'grooved'",
+  "bom_edge": "פס קצה",
+  "edge_front": "קצה קדמי",
+  "edge_all": "כל הקצוות",
+  "edge_none": "ללא",
+  "err_edge_role": "edge_banding.{role} אינו תפקיד חלק חוקי",
+  "err_edge_band": "edge_banding.{role} חייב להיות 'none', 'front' או 'all'",
   "err_hw_name": "פריט החומרה '{value}' לא נמצא בספרייה"
 }

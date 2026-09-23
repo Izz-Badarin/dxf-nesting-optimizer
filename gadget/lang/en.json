@@ -54,5 +54,11 @@
   "err_divider_gap": "cabinet {id}: zone {i}: dividers overlap or are too close (need at least the divider thickness apart)",
   "err_box_values": "cabinet {id}: zone {i}: drawer box values must be positive and fit the cabinet",
   "err_box_bottom": "cabinet {id}: zone {i}: drawers.bottom must be 'lay-in' or 'grooved'",
+  "bom_edge": "Edge banding",
+  "edge_front": "Front edge",
+  "edge_all": "All edges",
+  "edge_none": "None",
+  "err_edge_role": "edge_banding.{role} is not a valid part role",
+  "err_edge_band": "edge_banding.{role} must be 'none', 'front' or 'all'",
   "err_hw_name": "hardware reference '{value}' not found in the library"
 }

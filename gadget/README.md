@@ -1,4 +1,4 @@
-# Najjar Pro — gadget core (v0.4.0)
+# Najjar Pro — gadget core (v0.5.0)
 
 > **Every shop has a carpenter. Now it has Najjar Pro.**
 > كُلّ ورشة عندها نجّار — هلق كمان عندها Najjar Pro
@@ -62,6 +62,19 @@ and the core produces, fully dimensioned and deterministic:
 - **Divider pin columns**: dividers in adjustable-shelf zones get the
   system-32 ladder on BOTH faces — face B is pre-mirrored onto the
   `DRILL5_SHELF_FLIP` layer with a flip note (flip about the short axis)
+- **Drawer-box corner joinery** from the library
+  (`"joinery": "corner_dowel_8"` or `"corner_rafix_15"`): face holes on
+  the box sides as `DRILL_DOWEL` geometry; the mating edge holes on the
+  front/back panels become an `edge-drill` BOM note (horizontal drill)
+- **Edge banding** per role (`edge_banding: {"shelf": "front", ...}`) —
+  defaults for every part role, user overrides, and a translated BOM
+  column (EN / HE / AR)
+- **Multi-cabinet projects**: a whole kitchen in one spec — identical
+  cabinets merge into single BOM rows with doubled quantities, one
+  project-wide cut list and sheet estimate (see `kitchen-job.json`)
+- **Vectric adapter** (`vectric.lua`): the core renders through a
+  backend — mock-tested today, the real VCarve/Aspire job backend plugs
+  into the same interface in v0.6 without touching the core
 - **Doors & drawer fronts** with full-overlay reveal math; doors carry
   their hinge side
 - **System-32 shelf pin ladders** (2 columns, 32 mm pitch)
@@ -104,7 +117,7 @@ displays inches too.
 
 ```bash
 cd gadget
-lua tests/run_tests.lua     # 423 assertions
+lua tests/run_tests.lua     # 486 assertions
 ```
 
 ## Layout
@@ -123,6 +136,7 @@ src/najjar/         the core (pure Lua, no VCarve needed)
   dxf.lua             DXF R12 writer (POLYLINE/CIRCLE/TEXT per layer)
   svg.lua             styled preview
   layers.lua          the layer contract (name -> CAM operation)
+  vectric.lua         Vectric adapter: mock backend today, real SDK in v0.6
   fs.lua              tiny file helpers (replaced by gadget SDK later)
 hardware/*.json     HARDWARE LIBRARY — edit these, not the code
 lang/*.json         UI strings EN / HE / AR — community translations welcome
@@ -145,6 +159,7 @@ tools/              dev tooling (build-lua.sh builds a standalone Lua)
 | `DRILL_SLIDE` | drill the slide locking pattern (hole + slot) |
 | `DRILL5_SHELF_FLIP` | shelf pins for the opposite face (flip the part) |
 | `BOX_GROOVE` | pocket the drawer-bottom groove (grooved boxes) |
+| `DRILL_DOWEL` | drill box corner joinery (dowel / rafix face holes) |
 | `ETCH` | V-bit engrave (labels, cabinet marks) |
 
 ## Golden references (asserted in tests)
@@ -156,6 +171,11 @@ parts: sides 560×720, bottom/top 864×541, back 880×720, shelves 862×550;
 **2) Wardrobe 1000×2000×550, door zone + drawer zone** — 8 unique parts
 / 14 total: doors 496.5×1596 with 3 hinges each (mirrored), fronts
 996×130, shelves t16; 120 pins per side; 9.23 m².
+
+**4) Kitchen-job — 3 cabinets in one project** (K1 + two identical wall
+cabinets 600×700×520): 19 unique parts / 38 total — identical cabinets
+merge (4 wall sides in one row), 10.97 m² → 4 sheets, deterministic
+project-wide pipeline.
 
 **3) Kitchen-mixed 900×900×550, divider at 300 + boxes + slides + LED** —
 13 unique parts / 24 total: divider 531×682 standing ON the bottom panel
@@ -182,6 +202,7 @@ signed off.**
 
 ## Roadmap
 
-v0.5 box corner joinery + VCarve gadget shell (dialogs, drawing, toolpath
-templates) → v0.6 licensing + website.
+v0.6 **VCarve gadget shell** — the real Vectric backend, wizard dialogs,
+drawing into the job, toolpath templates (needs a VCarve Pro / Aspire
+license) → v0.7 licensing + website.
 See the product plan for milestones and business model.

@@ -1,0 +1,58 @@
+{
+  "project": "kitchen-job",
+  "units": "mm",
+  "panel_material": { "thickness": 18.0, "name": "ply-18" },
+  "sheet": { "width": 1220, "height": 2440 },
+  "fronts": { "style": "full_overlay", "reveal": 3.0, "edge": 2.0 },
+  "cabinets": [
+    {
+      "id": "K1",
+      "width": 900.0,
+      "height": 900.0,
+      "depth": 550.0,
+      "construction": {
+        "back": { "type": "grooved", "thickness": 9.0, "groove_depth": 8.0, "groove_offset": 10.0 }
+      },
+      "zones": [
+        { "type": "door", "from": 0, "to": 700, "doors": { "count": 2 },
+          "dividers": [{ "at": 300 }],
+          "shelves": { "count": 2, "adjustable": true } },
+        { "type": "drawers", "from": 700, "to": 900,
+          "drawers": { "count": 2, "box": true, "joinery": "corner_dowel_8" } }
+      ],
+      "hardware": {
+        "connector": "cabineo_12", "shelf_pins": "shelf_pin_5",
+        "hinges": "hinge_cup_35", "led_channel": "led_channel_8x8",
+        "slides": "slide_undermount"
+      }
+    },
+    {
+      "id": "W1",
+      "width": 600.0, "height": 700.0, "depth": 520.0,
+      "construction": {
+        "back": { "type": "grooved", "thickness": 9.0, "groove_depth": 8.0, "groove_offset": 10.0 }
+      },
+      "zones": [
+        { "type": "door", "from": 0, "to": 700, "doors": { "count": 1 },
+          "shelves": { "count": 1, "adjustable": true } }
+      ],
+      "hardware": {
+        "connector": "cabineo_12", "shelf_pins": "shelf_pin_5", "hinges": "hinge_cup_35"
+      }
+    },
+    {
+      "id": "W2",
+      "width": 600.0, "height": 700.0, "depth": 520.0,
+      "construction": {
+        "back": { "type": "grooved", "thickness": 9.0, "groove_depth": 8.0, "groove_offset": 10.0 }
+      },
+      "zones": [
+        { "type": "door", "from": 0, "to": 700, "doors": { "count": 1 },
+          "shelves": { "count": 1, "adjustable": true } }
+      ],
+      "hardware": {
+        "connector": "cabineo_12", "shelf_pins": "shelf_pin_5", "hinges": "hinge_cup_35"
+      }
+    }
+  ]
+}

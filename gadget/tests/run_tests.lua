@@ -25,6 +25,10 @@ local tests = {
   "test_dividers",
   "test_drawers_led",
   "test_slides_pins",
+  "test_joinery",
+  "test_edge",
+  "test_project",
+  "test_vectric",
 }
 
 for _, t in ipairs(tests) do

@@ -185,6 +185,40 @@ function M.place(lib, cab, panels)
     end
   end
 
+  -- drawer box corner joinery (dowel / rafix from the library) --------------------
+  -- face holes land on the drawer sides as geometry; the mating edge holes
+  -- on the front/back panels cannot be drilled flat -> BOM note for a
+  -- horizontal drill
+  local joinery_id = nil
+  for _, z in ipairs(cab.zones or {}) do
+    if z.type == "drawers" and z.drawers and z.drawers.box
+       and z.drawers.joinery then
+      joinery_id = z.drawers.joinery
+      break
+    end
+  end
+  local jn = joinery_id and lib[joinery_id]
+  if jn and type(jn.face_side) == "table" then
+    local edge_note
+    if type(jn.edge_mate) == "table" and #jn.edge_mate > 0 then
+      local parts = {}
+      for _, em in ipairs(jn.edge_mate) do
+        parts[#parts + 1] = string.format("Ø%g ×%d", em.d, em.count or 1)
+      end
+      edge_note = "edge-drill " .. table.concat(parts, ", ") .. " per end (horizontal drill)"
+    end
+    for _, p in ipairs(panels) do
+      if p.role == "drawer_side" then
+        for _, hh in ipairs(jn.face_side) do
+          add_hole(p, "DRILL_DOWEL", hh.x_from_end, hh.y_from_bottom, hh.d, hh.depth or 12.0)
+          add_hole(p, "DRILL_DOWEL", p.w - hh.x_from_end, hh.y_from_bottom, hh.d, hh.depth or 12.0)
+        end
+      elseif p.role == "drawer_fb" and edge_note then
+        p.meta.note = ((p.meta.note and p.meta.note .. "; ") or "") .. edge_note
+      end
+    end
+  end
+
   -- drawer slide locking pattern on the drawer box sides ------------------------
   local slides = hw.slides and lib[hw.slides]
   if slides and type(slides.locking) == "table" then

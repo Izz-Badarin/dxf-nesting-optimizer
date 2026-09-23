@@ -54,5 +54,11 @@
   "err_divider_gap": "الخزانة {id}: المنطقة {i} — المقسّمات متداخلة أو متقاربة جدًا (يلزم فرق لا يقل عن سماكة المقسّم)",
   "err_box_values": "الخزانة {id}: المنطقة {i} — قيم صندوق الدرج يجب أن تكون موجبة وتناسب الخزانة",
   "err_box_bottom": "الخزانة {id}: المنطقة {i} — drawers.bottom يجب أن يكون 'lay-in' أو 'grooved'",
+  "bom_edge": "شريط حواف",
+  "edge_front": "الحافة الأمامية",
+  "edge_all": "كل الحواف",
+  "edge_none": "بدون",
+  "err_edge_role": "edge_banding.{role} ليس دور قطعة صحيحًا",
+  "err_edge_band": "edge_banding.{role} يجب أن يكون 'none' أو 'front' أو 'all'",
   "err_hw_name": "قطعة الهاردوير '{value}' غير موجودة في المكتبة"
 }

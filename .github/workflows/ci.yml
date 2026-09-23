@@ -70,3 +70,4 @@ jobs:
           lua5.4 main.lua templates/euro-base-900.json out he
           lua5.4 main.lua templates/wardrobe-zones.json out en
           lua5.4 main.lua templates/kitchen-mixed.json out en
+          lua5.4 main.lua templates/kitchen-job.json out en

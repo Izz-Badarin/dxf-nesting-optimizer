@@ -357,6 +357,7 @@ function M.decompose(cab, spec)
     end
   else
     -- legacy: one shelf entry for the whole cabinet (v0.1 behavior)
+    -- (edge banding is attached below for every panel)
     local sh = cab.shelves
     if sh.count > 0 then
       panels[#panels + 1] = {
@@ -373,6 +374,11 @@ function M.decompose(cab, spec)
         meta = { adjustable = sh.adjustable, note = sh.adjustable and "adjustable" or "fixed" },
       }
     end
+  end
+
+  -- edge banding per role (v0.5)
+  for _, p in ipairs(panels) do
+    p.meta.edge_banding = spec.edge_banding[p.role] or "none"
   end
 
   return panels
