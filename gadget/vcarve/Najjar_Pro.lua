@@ -277,6 +277,13 @@ function main(script_path)
   local parts = geom.build_parts(all_panels)
   geom.layout(parts)
 
+  -- 5b. nesting + cost (v0.8) ---------------------------------------------------
+  local nest = require("najjar.nest")
+  local costmod = require("najjar.cost")
+  local nesting = nest.pack(parts, spec.sheet,
+    { kerf = spec.sheet.kerf, margin = spec.sheet.margin })
+  local cost = costmod.estimate(parts, spec, lib, nesting.count)
+
   -- 6. draw into the job through the real backend -------------------------------
   local backend_factory = dofile(base .. "/najjar_backend.lua")
   local backend = backend_factory(job)
@@ -290,7 +297,8 @@ function main(script_path)
     local out_dir = base .. "/out"
     fs.mkdir(out_dir)
     local tr = require("najjar.i18n").load(base .. "/lang", lang)
-    fs.writefile(out_dir .. "/najjar_bom.csv", bom.to_csv(bom.rows(parts), tr, spec.source_units))
+    fs.writefile(out_dir .. "/najjar_bom.csv",
+                 bom.to_csv(bom.rows(parts), tr, spec.source_units, cost))
     require("najjar.dxf").write(out_dir .. "/najjar_parts.dxf", parts)
 
     -- dimension check (v0.7)
@@ -310,7 +318,15 @@ function main(script_path)
     end
     viewer.write(out_dir .. "/najjar_viewer.html", parts, boxes, entries,
                  { title = spec.project, tr = tr })
+    for i, s in ipairs(nesting.sheets) do
+      nest.write_svg(out_dir .. string.format("/najjar_nesting_%d.svg", i), s, spec.sheet, {
+        title = tr("nest_sheet", { n = i, t = nesting.count }),
+        dims = string.format("%g x %g mm", spec.sheet.width, spec.sheet.height),
+      })
+    end
 
+    local cost_line = tr("msg_cost",
+      { total = string.format("%.2f", cost.total), currency = cost.currency })
     local check_line
     if cc.error + cc.warn > 0 then
       check_line = string.format("\nDimension check: %d error(s), %d warning(s) - see the viewer.",
@@ -319,8 +335,8 @@ function main(script_path)
       check_line = "\nDimension check: all clear."
     end
     DisplayMessageBox("Najjar Pro: parts drawn on layers.\n\n" ..
-                      "BOM + DXF + 3D viewer saved to:\n" .. out_dir ..
-                      check_line)
+                      "BOM + DXF + 3D viewer + nesting saved to:\n" .. out_dir ..
+                      check_line .. "\n" .. cost_line)
   end)
 
   local total_qty = 0

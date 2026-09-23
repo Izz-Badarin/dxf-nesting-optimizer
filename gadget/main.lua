@@ -170,6 +170,20 @@ else
   print(tr("msg_check_clean"))
 end
 
+-- sheet nesting (v0.8) ---------------------------------------------------------
+local nest = require("najjar.nest")
+local nesting = nest.pack(parts, spec.sheet,
+  { kerf = spec.sheet.kerf, margin = spec.sheet.margin })
+print(tr("msg_nesting", { n = nesting.count, u = string.format("%.0f", nesting.utilization * 100) }))
+if #nesting.unplaced > 0 then
+  print(tr("msg_nest_unplaced", { n = #nesting.unplaced }))
+end
+
+-- cost estimate (v0.8) -----------------------------------------------------------
+local costmod = require("najjar.cost")
+local cost = costmod.estimate(parts, spec, lib, nesting.count)
+print(tr("msg_cost", { total = string.format("%.2f", cost.total), currency = cost.currency }))
+
 -- write outputs ---------------------------------------------------------------
 fs.mkdir(outdir)
 local base = fs.join(outdir, spec.project)
@@ -180,7 +194,7 @@ print(tr("msg_written", { file = base .. "_parts.dxf" }))
 svg.write(base .. "_preview.svg", parts, { width = bounds.width, height = bounds.height, title = spec.project })
 print(tr("msg_written", { file = base .. "_preview.svg" }))
 
-fs.writefile(base .. "_bom.csv", bom.to_csv(bom.rows(parts), tr, spec.source_units))
+fs.writefile(base .. "_bom.csv", bom.to_csv(bom.rows(parts), tr, spec.source_units, cost))
 print(tr("msg_written", { file = base .. "_bom.csv" }))
 
 -- 3D viewer with explode (v0.7) ---------------------------------------------------
@@ -198,10 +212,20 @@ end
 viewer.write(base .. "_viewer.html", parts, boxes, entries, { title = spec.project, tr = tr })
 print(tr("msg_written", { file = base .. "_viewer.html" }))
 
+-- nesting sheets (v0.8)
+for i, s in ipairs(nesting.sheets) do
+  local svg_path = string.format("%s_nesting_%d.svg", base, i)
+  nest.write_svg(svg_path, s, spec.sheet, {
+    title = tr("nest_sheet", { n = i, t = nesting.count }),
+    dims = string.format("%g x %g mm", spec.sheet.width, spec.sheet.height),
+  })
+  print(tr("msg_written", { file = svg_path }))
+end
+
 local total_qty = 0
 for _, p in ipairs(parts) do total_qty = total_qty + p.qty end
 local area = geometry.total_area(parts)
-local sheets = geometry.estimate_sheets(area, spec.sheet.width, spec.sheet.height)
+local sheets = nesting.count
 
 local job = {
   generator = "najjar-pro",
@@ -211,6 +235,21 @@ local job = {
   sheet = spec.sheet,
   cabinets = cabinet_jobs,
   checks = entries,
+  nesting = {
+    sheets = nesting.count,
+    utilization = math.floor(nesting.utilization * 1000 + 0.5) / 1000,
+    kerf = nesting.kerf,
+    margin = nesting.margin,
+    unplaced = #nesting.unplaced,
+    layout = (function()
+      local layout = {}
+      for i, s in ipairs(nesting.sheets) do
+        layout[i] = s.placements
+      end
+      return layout
+    end)(),
+  },
+  cost = cost,
   summary = {
     unique_parts = #parts,
     total_parts = total_qty,

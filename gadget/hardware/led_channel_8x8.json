@@ -3,11 +3,16 @@
   "type": "led_channel",
   "display": {
     "en": "LED channel 8 x 8 (under top)",
-    "he": "\u05e2\u05e8\u05d5\u05e5 LED 8 x 8 (\u05de\u05ea\u05d7\u05ea \u05dc\u05e2\u05dc\u05d9\u05d5\u05df)",
-    "ar": "\u0642\u0646\u0627\u0629 LED \u0668\u00d7\u0068 (\u062a\u062d\u062a \u0627\u0644\u0639\u0644\u0648\u064a)"
+    "he": "ערוץ LED 8 x 8 (מתחת לעליון)",
+    "ar": "قناة LED ٨×h (تحت العلوي)"
   },
   "verify": "generic 8x8 mm channel - set offset_from_front to match your diffuser strip placement",
-  "groove": { "w": 8.0, "depth": 8.0 },
+  "groove": {
+    "w": 8.0,
+    "depth": 8.0
+  },
   "offset_from_front": 100.0,
-  "end_margin": 50.0
+  "end_margin": 50.0,
+  "price_per_m": 6.0,
+  "price_note": "editable placeholder - set your real cost (per unit; LED per metre)"
 }

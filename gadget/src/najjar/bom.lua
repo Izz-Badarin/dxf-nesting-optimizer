@@ -44,7 +44,7 @@ end
 -- Render BOM rows as CSV text. tr = i18n translator; units "mm" | "in"
 -- controls the display of dimensions (values are stored in mm internally).
 --
-function M.to_csv(rows, tr, units)
+function M.to_csv(rows, tr, units, cost)
   tr = tr or function(k) return k end
   units = units or "mm"
   local fmt
@@ -73,6 +73,20 @@ function M.to_csv(rows, tr, units)
       csv_cell(r.notes),
     }, ",")
   end
+  -- cost estimate section (v0.8)
+  if cost then
+    local costmod = require("najjar.cost")
+    lines[#lines + 1] = ""
+    lines[#lines + 1] = table.concat({
+      tr("cost_section"), tr("cost_qty"), tr("cost_unit_price"), tr("cost_line"),
+    }, ",")
+    for _, r in ipairs(costmod.bom_rows(cost, tr)) do
+      lines[#lines + 1] = table.concat({
+        csv_cell(r.label), csv_cell(r.qty), csv_cell(r.unit_price), csv_cell(r.cost),
+      }, ",")
+    end
+  end
+
   -- UTF-8 BOM so Excel detects the encoding
   return string.char(0xEF, 0xBB, 0xBF) .. table.concat(lines, "\r\n") .. "\r\n"
 end

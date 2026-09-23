@@ -78,6 +78,26 @@ function M.normalize(raw)
     err("err_sheet", {})
     sheet.width, sheet.height = 1220.0, 2440.0
   end
+  -- saw kerf and sheet trim for nesting (clamped to sane ranges)
+  sheet.kerf = math.min(20.0, math.max(0.0, (tonumber(sh.kerf) or 4.0) * scale))
+  sheet.margin = math.min(50.0, math.max(0.0, (tonumber(sh.margin) or 8.0) * scale))
+
+  -- pricing (all editable; defaults are placeholders the shop overrides) ------
+  local praw = (type(raw.pricing) == "table") and raw.pricing or {}
+  local function price_field(name, default)
+    local v = tonumber(praw[name])
+    if v ~= nil and (v < 0 or v ~= v) then
+      err("err_pricing", { field = name })
+      return default
+    end
+    return v or default
+  end
+  local pricing = {
+    board_per_m2 = price_field("board_per_m2", 45.0),
+    edge_per_m = price_field("edge_per_m", 2.0),
+    currency = (type(praw.currency) == "string" and #praw.currency > 0)
+      and praw.currency or "ILS",
+  }
 
   -- per-role materials (user overrides on top of the panel default) ---------------
   local materials = {}
@@ -166,6 +186,7 @@ function M.normalize(raw)
     source_units = units,
     panel = panel,
     sheet = sheet,
+    pricing = pricing,
     materials = materials,
     edge_banding = edge_banding,
     fronts = fronts_default,
@@ -224,6 +245,20 @@ function M.normalize(raw)
       end
       if go < 0 or (D and (go + bt) > D) then
         err("err_groove_fit", { id = id })
+      end
+    end
+
+    -- plinth (optional toe-kick strip mounted under the body) ------------------------
+    local plinth = nil
+    local praw_p = constr.plinth
+    if type(praw_p) == "table" and praw_p ~= json.null then
+      local ph = (tonumber(praw_p.height) or 100.0) * scale
+      local pr = (tonumber(praw_p.recess) or 50.0) * scale
+      local pt = (tonumber(praw_p.thickness) or 16.0) * scale
+      if not (ph >= 40 and ph <= 400) then
+        err("err_plinth_height", { id = id })
+      else
+        plinth = { height = ph, recess = pr, thickness = pt }
       end
     end
 
@@ -433,6 +468,7 @@ function M.normalize(raw)
         construction = {
           panel_layout = layout,
           back = { type = btype, thickness = bt, groove_depth = gd, groove_offset = go },
+          plinth = plinth,
         },
         fronts = fronts,
         zones = zones,

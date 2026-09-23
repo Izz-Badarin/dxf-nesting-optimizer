@@ -1,0 +1,24 @@
+{
+  "project": "base-plinth",
+  "panel_material": { "thickness": 18.0, "name": "ply-18" },
+  "sheet": { "width": 1220, "height": 2440, "kerf": 4, "margin": 8 },
+  "fronts": { "style": "full_overlay", "reveal": 3.0, "edge": 2.0 },
+  "pricing": { "board_per_m2": 45.0, "edge_per_m": 2.0, "currency": "ILS" },
+  "cabinets": [{
+    "id": "B1", "width": 900, "height": 720, "depth": 520,
+    "construction": {
+      "back": { "type": "grooved", "thickness": 9.0, "groove_depth": 8.0, "groove_offset": 10.0 },
+      "plinth": { "height": 100, "recess": 50, "thickness": 16 }
+    },
+    "zones": [{
+      "type": "door", "from": 0, "to": 720,
+      "doors": { "count": 2 },
+      "shelves": { "count": 1, "adjustable": true }
+    }],
+    "hardware": {
+      "connector": "cabineo_12",
+      "shelf_pins": "shelf_pin_5",
+      "hinges": "hinge_cup_35"
+    }
+  }]
+}

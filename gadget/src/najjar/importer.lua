@@ -34,6 +34,7 @@ end
 -- Returns: raw_spec | nil, warnings[]
 --
 function M.from_foreign(raw, map)
+  map = map or {}
   local warnings = {}
   local function warn(msg)
     warnings[#warnings + 1] = msg
@@ -147,7 +148,8 @@ end
 -- Expected columns (case-insensitive, order-free): id/name, w/width,
 -- h/height/length, t/thickness, qty, material. Extra columns ignored.
 --------------------------------------------------------------------------------
-local function split_csv_line(line)
+local function split_csv_line(line, d)
+  d = d or ","
   local fields = {}
   local cur = {}
   local in_q = false
@@ -165,7 +167,7 @@ local function split_csv_line(line)
     else
       if ch == '"' then
         in_q = true; i = i + 1
-      elseif ch == "," then
+      elseif ch == d then
         fields[#fields + 1] = table.concat(cur); cur = {}
         i = i + 1
       else
@@ -194,8 +196,23 @@ function M.parse_cutlist_csv(text)
 
   -- strip a UTF-8 BOM on the header
   local header = lines[1]:gsub("^\239\187\191", "")
+  -- detect the delimiter: comma, semicolon (European exports) or tab
+  local counts = { [","] = 0, [";"] = 0, ["\t"] = 0 }
+  local in_q = false
+  for i = 1, #header do
+    local ch = header:sub(i, i)
+    if ch == '"' then
+      in_q = not in_q
+    elseif not in_q and counts[ch] then
+      counts[ch] = counts[ch] + 1
+    end
+  end
+  local delim = ","
+  if counts[";"] > counts[","] or counts["\t"] > counts[","] then
+    delim = (counts["\t"] > counts[";"]) and "\t" or ";"
+  end
   local cols = {}
-  for i, name in ipairs(split_csv_line(header)) do
+  for i, name in ipairs(split_csv_line(header, delim)) do
     cols[trim(name):lower()] = i
   end
   local function col(names)
@@ -218,7 +235,7 @@ function M.parse_cutlist_csv(text)
 
   local parts = {}
   for li = 2, #lines do
-    local f = split_csv_line(lines[li])
+    local f = split_csv_line(lines[li], delim)
     local w, h, t = to_num(trim(f[c_w] or "")), to_num(trim(f[c_h] or "")), to_num(trim(f[c_t] or ""))
     if w and h and t and w > 0 and h > 0 and t > 0 then
       local qty = c_q and to_num(trim(f[c_q] or "")) or 1

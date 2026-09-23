@@ -168,6 +168,30 @@ canvas { display:block; width:100%; height:100%; cursor:grab; }
     draw();
   });
 
+  // touch (v0.8): one finger rotates, pinch zooms - works on shop tablets
+  var tp = null;
+  cv.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 1) tp = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    else if (e.touches.length === 2) tp = { d: Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY) };
+    e.preventDefault();
+  }, { passive: false });
+  cv.addEventListener('touchmove', function (e) {
+    if (e.touches.length === 1 && tp && tp.x !== undefined) {
+      yaw += (e.touches[0].clientX - tp.x) * 0.008;
+      pitch += (e.touches[0].clientY - tp.y) * 0.008;
+      pitch = Math.max(-1.4, Math.min(1.4, pitch));
+      tp = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      draw();
+    } else if (e.touches.length === 2 && tp && tp.d !== undefined) {
+      var dd = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      if (dd > 0 && tp.d > 0) { dist *= tp.d / dd; dist = Math.max(300, Math.min(12000, dist)); }
+      tp = { d: dd };
+      draw();
+    }
+    e.preventDefault();
+  }, { passive: false });
+  cv.addEventListener('touchend', function () { tp = null; });
+
   // geometry ----------------------------------------------------------------
   function rot(p) {
     var cy = Math.cos(yaw), sy = Math.sin(yaw);

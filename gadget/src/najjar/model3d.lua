@@ -13,10 +13,11 @@ local ROLE_COLORS = {
   shelf = "#c89b63", divider = "#a06a35",
   door = "#5b8c5a", front = "#4a7d49",
   drawer_side = "#7a6449", drawer_fb = "#7a6449", drawer_bottom = "#c8b693",
+  plinth = "#6e6259",
   custom = "#9aa5b1",
 }
 
-local function box(part, x0, y0, z0, sx, sy, sz, explode)
+local function box_raw(part, x0, y0, z0, sx, sy, sz, explode)
   return {
     id = part.id,
     role = part.role,
@@ -48,8 +49,28 @@ function M.build_cabinet(cab, panels, origin, spec)
   local boxes = {}
   local K = 1.0 -- explode magnitude factor (viewer scales it)
 
+  -- plinth: the body sits ON the plinth, so every body box shifts up
+  local plinth = cab.construction.plinth
+  local y_off = plinth and plinth.height or 0
+  local box = function(part, x0, y0, z0, sx, sy, sz, explode)
+    local b = box_raw(part, x0, y0 + y_off, z0, sx, sy, sz, explode)
+    return b
+  end
+  if plinth then
+    for _, p in ipairs(panels) do
+      if p.role == "plinth" then
+        local b = box_raw(p, 0, 0, plinth.recess, W, plinth.height, plinth.thickness,
+          { 0, -0.9 * K, 0 })
+        boxes[#boxes + 1] = b
+        break
+      end
+    end
+  end
+
   for _, p in ipairs(panels) do
-    if p.role == "side" then
+    if p.role == "plinth" then
+      -- already placed above, under the body
+    elseif p.role == "side" then
       local x0 = p.mirror and (W - t_side) or 0
       boxes[#boxes + 1] = box(p, x0, 0, 0, t_side, H, D,
         { (p.mirror and 1 or -1) * K, 0, 0 })
@@ -201,7 +222,7 @@ function M.build_loose(parts, layout_bounds)
       z = z + row_z + 60
       row_z = 0
     end
-    local b = box(part, x, 0, z, part.w, part.thickness, part.h, { 0, 0.4, 0 })
+    local b = box_raw(part, x, 0, z, part.w, part.thickness, part.h, { 0, 0.4, 0 })
     b.dims = { part.w, part.h, part.thickness }
     b.label = part.label
     boxes[#boxes + 1] = b

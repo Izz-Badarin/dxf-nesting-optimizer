@@ -2,13 +2,25 @@
   "id": "corner_rafix_15",
   "type": "corner_joinery",
   "display": {
-    "en": "Rafix \u00d815 (knock-down drawer corners)",
-    "he": "Rafix \u00d815 (\u05e4\u05d9\u05e0\u05d5\u05ea \u05de\u05d2\u05d9\u05e8\u05d4 \u05de\u05e4\u05e8\u05e7\u05d5\u05ea)",
-    "ar": "Rafix \u00d815 (\u0623\u0631\u0643\u0627\u0646 \u0642\u0627\u0628\u0644\u0629 \u0644\u0644\u0641\u0643)"
+    "en": "Rafix Ø15 (knock-down drawer corners)",
+    "he": "Rafix Ø15 (פינות מגירה מפרקות)",
+    "ar": "Rafix Ø15 (أركان قابلة للفك)"
   },
   "verify": "generic Rafix-style knock-down fitting - verify hole sizes and positions against your fitting brand before production",
   "face_side": [
-    { "d": 15.0, "depth": 13.0, "x_from_end": 35.0, "y_from_bottom": 37.0 }
+    {
+      "d": 15.0,
+      "depth": 13.0,
+      "x_from_end": 35.0,
+      "y_from_bottom": 37.0
+    }
   ],
-  "edge_mate": [ { "d": 15.0, "count": 1 } ]
+  "edge_mate": [
+    {
+      "d": 15.0,
+      "count": 1
+    }
+  ],
+  "price": 1.2,
+  "price_note": "editable placeholder - set your real cost (per unit; LED per metre)"
 }

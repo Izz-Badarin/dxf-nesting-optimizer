@@ -26,6 +26,7 @@ local NAME_KEYS = {
   drawer_side = "part_drawer_side",
   drawer_fb = "part_drawer_fb",
   drawer_bottom = "part_drawer_bottom",
+  plinth = "part_plinth",
 }
 
 local function other_side(s)
@@ -153,6 +154,24 @@ function M.decompose(cab, spec)
     features = {},
     meta = { note = back.type },
   }
+
+  -- plinth / toe-kick strip under the body (optional, v0.8) -----------------------
+  local plinth = cab.construction.plinth
+  if plinth then
+    panels[#panels + 1] = {
+      id = cab.id .. "-PLINTH",
+      role = "plinth",
+      name_key = NAME_KEYS.plinth,
+      qty = 1,
+      w = W,
+      h = plinth.height,
+      thickness = plinth.thickness,
+      material = mats.side.material,
+      mirror = false,
+      features = {},
+      meta = { note = "recess " .. string.format("%g", plinth.recess) .. " from front" },
+    }
+  end
 
   -- zones (v0.2+) or legacy single shelf row ---------------------------------------------
   if cab.zones then

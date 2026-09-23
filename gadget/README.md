@@ -1,4 +1,4 @@
-# Najjar Pro — gadget core (v0.7.0)
+# Najjar Pro — gadget core (v0.8.0)
 
 > **Every shop has a carpenter. Now it has Najjar Pro.**
 > كُلّ ورشة عندها نجّار — هلق كمان عندها Najjar Pro
@@ -125,6 +125,39 @@ other app — new app, new map, **no code changes**. A CSV cut list
 (English / Hebrew / Arabic headers) becomes a loose-parts project that
 runs through the same pipeline: BOM, DXF, preview, 3D viewer.
 
+## Sheet nesting & cost estimate (v0.8) 📦
+
+The core now **packs parts onto real boards** (not just an area estimate):
+saw kerf and trim margins honoured, grain-aware (doors, fronts and plinths
+never rotate), one SVG per board with labels, dimensions and grain arrows:
+
+```
+Nesting: 5 sheet(s), 75% of the boards used
+Estimated cost: 858.83 ILS
+```
+
+- `sheet.kerf` / `sheet.margin` — user settings (mm)
+- utilization %, sheet count and the full placement layout land in `job.json`
+- **cost estimate**: boards (nested count x price/m2) + edge-banding metres +
+  counted hardware units x unit price — in the console, the BOM CSV and
+  `job.json`. **Every price is editable**: the `pricing` block in your spec
+  or `defaults.json`, and the `price` field inside each hardware JSON.
+  Shipped values are placeholders — set your real numbers once.
+
+**Plinth / toe-kick** (every euro base cabinet has one):
+
+```json
+"construction": { "plinth": { "height": 100, "recess": 50, "thickness": 16 } }
+```
+
+The plinth becomes its own part (BOM note carries the recess), the 3D body
+sits on it, and it explodes downward in the viewer. See
+`templates/base-plinth.json`.
+
+**Hardening**: hostile JSON (depth-bombed), semicolon/tab CSVs with decimal
+commas, and fuzzed specs all fail cleanly with localized messages; a parity
+test guarantees every UI string exists in English, Hebrew AND Arabic.
+
 ## The VCarve / Aspire gadget shell (v0.6) 🎯
 
 The installable gadget is ready: **`release/NajjarPro.vgadget`** (or build
@@ -150,10 +183,11 @@ shell files carry the required `-- VECTRIC LUA SCRIPT` marker.
 ⚠️ v0.6 is the shell spike: the API usage mirrors real public gadgets, but
 it has **not yet run inside a live VCarve** — that first-run test happens
 the moment a VCarve Pro license is available. The test-suite already
-covers everything short of it (664 assertions: syntax, dialog/field
+covers everything short of it (1246 assertions: syntax, dialog/field
 consistency, spec assembly, mock-render through a fake SDK, 3D model,
-checks, import, viewer). The shell writes the 3D viewer + dimension
-checks next to the BOM/DXF in the gadget's `out/` folder.
+checks, import, viewer, nesting, cost, fuzz). The shell writes the 3D
+viewer, nesting sheets and dimension checks next to the BOM/DXF in the
+gadget's `out/` folder.
 
 ## Run it (headless)
 
@@ -176,7 +210,7 @@ displays inches too.
 
 ```bash
 cd gadget
-lua tests/run_tests.lua     # 664 assertions
+lua tests/run_tests.lua     # 1246 assertions
 ```
 
 ## Layout
@@ -263,6 +297,7 @@ signed off.**
 
 ## Roadmap
 
-v0.8 shell hardening (live VCarve test, multi-page wizard, hardware
-ToolPickers, toolpath templates per layer) → v0.9 licensing + website.
-See the product plan for milestones and business model.
+v0.9 shell hardening (live VCarve test, multi-page wizard, hardware
+ToolPickers, toolpath templates per layer) → v1.0 licensing + website.
+See [`CHANGELOG.md`](CHANGELOG.md) for the full version history and the
+product plan for the business model.

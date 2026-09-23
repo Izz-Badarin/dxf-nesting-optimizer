@@ -2,16 +2,27 @@
   "id": "shelf_pin_5",
   "type": "shelf_pin",
   "display": {
-    "en": "Shelf pin \u00d85 (system 32)",
-    "he": "\u05e1\u05d9\u05db\u05d5\u05ea \u05de\u05d3\u05e3 \u00d85 (\u05de\u05e2\u05e8\u05db\u05ea 32)",
-    "ar": "\u062f\u0628\u0627\u0628\u064a\u0633 \u0631\u0641 \u00d85 (\u0646\u0637\u0627\u0645 32)"
+    "en": "Shelf pin Ø5 (system 32)",
+    "he": "סיכות מדף Ø5 (מערכת 32)",
+    "ar": "دبابيس رف Ø5 (نطام 32)"
   },
   "verify": "drill depth pending catalog sign-off",
-  "hole": { "d": 5.0, "depth": 9.0 },
+  "hole": {
+    "d": 5.0,
+    "depth": 9.0
+  },
   "columns": [
-    { "from": "front", "offset": 37.0 },
-    { "from": "rear", "offset": 37.0 }
+    {
+      "from": "front",
+      "offset": 37.0
+    },
+    {
+      "from": "rear",
+      "offset": 37.0
+    }
   ],
   "pitch": 32.0,
-  "margin": 32.0
+  "margin": 32.0,
+  "price": 0.3,
+  "price_note": "editable placeholder - set your real cost (per unit; LED per metre)"
 }

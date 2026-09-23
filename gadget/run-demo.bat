@@ -65,6 +65,7 @@ echo ============================================
 echo  Opening previews in your browser...
 echo ============================================
 if exist "out\kitchen-mixed_viewer.html" start "" out\kitchen-mixed_viewer.html
+if exist "out\kitchen-mixed_nesting_1.svg" start "" out\kitchen-mixed_nesting_1.svg
 if exist "out\euro-base-900_preview.svg" start "" out\euro-base-900_preview.svg
 if exist "out\wardrobe-zones_preview.svg" start "" out\wardrobe-zones_preview.svg
 if exist "out\kitchen-mixed_preview.svg" start "" out\kitchen-mixed_preview.svg
@@ -72,6 +73,7 @@ if exist "out\kitchen-mixed_preview.svg" start "" out\kitchen-mixed_preview.svg
 echo.
 echo Done!
 echo  - 3D viewer HTML    : rotate, zoom, EXPLODE slider, dimension check
+echo  - Nesting SVGs     : every board laid out, ready to cut
 echo  - Preview SVG files : open in any browser
 echo  - BOM CSV files     : open in Excel
 echo  - DXF files         : import into ArtCAM / VCarve (Preserve Layers)

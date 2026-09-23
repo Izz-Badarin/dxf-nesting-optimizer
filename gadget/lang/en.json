@@ -86,5 +86,20 @@
   "chk_box_narrow": "cabinet {id} zone {i}: drawer box is only {w} mm wide",
   "chk_hinges": "cabinet {id} zone {i}: {n} hinges per door ({d} mm door)",
   "chk_setback": "cabinet {id} zone {i}: shelf setback is {s} mm - unusually deep",
-  "chk_groove_half": "cabinet {id}: back groove ({g} of {t} mm) is more than half the panel - weak shoulders"
+  "chk_groove_half": "cabinet {id}: back groove ({g} of {t} mm) is more than half the panel - weak shoulders",
+  "part_plinth": "Plinth",
+  "err_plinth_height": "cabinet {id}: plinth height must be between 40 and 400 mm",
+  "err_pricing": "pricing.{field} must be a positive number",
+  "msg_nesting": "Nesting: {n} sheet(s), {u}% of the boards used",
+  "msg_nest_unplaced": "{n} part(s) do not fit the board even rotated - increase the sheet size or split the part",
+  "nest_sheet": "Sheet {n} of {t}",
+  "cost_section": "Cost estimate (prices editable)",
+  "cost_item": "Item",
+  "cost_qty": "Qty",
+  "cost_unit_price": "Unit price",
+  "cost_line": "Line total",
+  "cost_boards": "Boards ({n} sheets)",
+  "cost_edge": "Edge banding ({m} m)",
+  "cost_total": "TOTAL",
+  "msg_cost": "Estimated cost: {total} {currency}"
 }

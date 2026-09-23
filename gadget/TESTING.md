@@ -59,14 +59,24 @@ scoop install lua        (Scoop)
 Double-click **`run-demo.bat`** in the `gadget` folder.
 
 It will:
-1. Run all **664 automatic tests** (must end with `664 passed, 0 failed`)
+1. Run all **1246 automatic tests** (must end with `1246 passed, 0 failed`)
 2. Generate all 3 demo cabinets (base, wardrobe, kitchen)
 3. Convert a **foreign demo config** through the importer
 4. Open the **3D viewer and previews in your browser**
 
+**Try the nesting sheets** (`kitchen-mixed_nesting_1.svg`, ...): every board
+laid out with labels and dimensions — this is what goes to the saw.
+Kerf and margins: `kerf` and `margin` inside the `sheet` block of your spec.
+
+**Check the cost line** in the console and at the bottom of the BOM CSV:
+boards + edge banding + hardware. Prices are placeholders — set yours in
+the `pricing` block (see `defaults.json.example`) and in each
+`hardware/*.json` (`price` field).
+
 **Try the 3D viewer** (`kitchen-mixed_viewer.html`):
 - drag to rotate, scroll to zoom
 - pull the **Explode slider** — the cabinet comes apart
+- works on **tablets/phones** too (drag with one finger, pinch to zoom)
 - click parts in the list to see their sizes
 - check the **dimension check panel** on the side
 

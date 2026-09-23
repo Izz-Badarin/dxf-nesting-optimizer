@@ -202,7 +202,7 @@ function Parser:parse_object()
   end
 end
 
-function Parser:parse_value()
+function Parser:parse_value_inner()
   self:skip_ws()
   if self.pos > self.len then
     return self:err("unexpected end of input")
@@ -231,6 +231,18 @@ function Parser:parse_value()
     return self:err("invalid literal")
   end
   return self:parse_number()
+end
+
+-- depth guard (v0.8): hostile deeply-nested JSON errors cleanly instead of
+-- overflowing the C stack
+function Parser:parse_value()
+  self.depth = (self.depth or 0) + 1
+  if self.depth > 200 then
+    return self:err("nesting too deep (over 200 levels)")
+  end
+  local v, e = self:parse_value_inner()
+  self.depth = self.depth - 1
+  return v, e
 end
 
 --- Decode a JSON string. Returns value, or nil + error message.

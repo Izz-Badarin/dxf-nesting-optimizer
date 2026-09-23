@@ -10,7 +10,17 @@
   "positions_per_panel": 2,
   "edge_margin": 50.0,
   "features": [
-    { "kind": "pocket", "d": 15.0, "depth": 11.0 },
-    { "kind": "hole", "d": 5.0, "depth": 12.0 }
-  ]
+    {
+      "kind": "pocket",
+      "d": 15.0,
+      "depth": 11.0
+    },
+    {
+      "kind": "hole",
+      "d": 5.0,
+      "depth": 12.0
+    }
+  ],
+  "price": 3.0,
+  "price_note": "editable placeholder - set your real cost (per unit; LED per metre)"
 }

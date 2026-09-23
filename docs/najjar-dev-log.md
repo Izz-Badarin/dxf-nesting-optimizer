@@ -311,3 +311,39 @@ ignored and the scripts are committed.
 **664 assertions green on Lua 5.4.6 and 5.5.1** (545 → 664). Golden numbers
 for the v0.1–v0.6 pipeline unchanged and still asserted. Roadmap: v0.8 =
 shell hardening (live VCarve first-run), v0.9 = licensing + website.
+
+---
+
+## v0.8.0 — nesting, cost, plinth, hardening (2026-09-23)
+
+**User directive:** "need more work to be better also try do a fixising — you
+need to do a lot of thing to be a professional plugins."
+
+Professional-gap round — the four things a shop actually asks for:
+
+- **`nest.lua`** — real sheet packing (the repo is named nesting-optimizer,
+  so far we only *estimated* sheets by area): deterministic shelf-packing,
+  kerf + trim margins, grain-aware rotation rules (doors/fronts/plinths
+  never rotate), per-sheet SVG reports with labels, dims and grain arrows,
+  utilization % into console + job.json. Kitchen-job golden: 5 sheets at
+  75% (the old area estimate claimed 4 — now honest).
+- **`cost.lua`** — quote per job: boards (nested count x price/m2) + edge
+  metres (from parts' edge_banding meta) + counted hardware (hinges by door
+  height from the library table, pins 4/shelf, connectors per panel layout,
+  slides per drawer box, LED channel per metre). Prices live in user data:
+  `pricing` spec block + `price` fields in the hardware JSONs (placeholders
+  until the shop sets real numbers). Appended to the BOM CSV.
+- **plinth/toe-kick** — `construction.plinth = {height, recess, thickness}`;
+  euro model: the strip mounts UNDER the unchanged body (sides stay full
+  height — no golden drift), own part + BOM recess note, 3D body lifted,
+  plinth explodes downward. `templates/base-plinth.json` demo.
+- **fixising** — `from_foreign` nil-map crash; LED channel missing from the
+  cost list; first-sheet bootstrap bug (everything "unplaced"); semicolon/
+  tab CSV delimiters + decimal commas; JSON depth bomb (limit 200, clean
+  error); viewer touch (rotate + pinch) for shop tablets; i18n parity test
+  (every key in EN+HE+AR, forever); fuzz suite over spec/JSON/CSV.
+
+**1246 assertions green on Lua 5.4.6 + 5.5.1** (664 → 1246). CHANGELOG.md
+added (keep-a-changelog format). Hardware JSONs now carry editable
+placeholder prices. Roadmap: v0.9 = shell hardening (live VCarve first-run
+when the license arrives), v1.0 = licensing + website.
