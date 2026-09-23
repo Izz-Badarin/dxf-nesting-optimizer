@@ -1,29 +1,38 @@
 @echo off
 rem ---------------------------------------------------------------------------
 rem Najjar Pro - one-click demo + test run (Windows)
-rem Put lua54.exe in this folder (see TESTING.md) or install Lua on PATH.
+rem Works with Lua 5.3, 5.4 or 5.5 - put lua54.exe / lua55.exe in this
+rem folder (see TESTING.md) or install Lua on PATH.
 rem ---------------------------------------------------------------------------
 setlocal
 cd /d "%~dp0"
 
 set LUA=
-if exist "lua54.exe" set LUA=lua54.exe
-where lua >nul 2>nul && set LUA=lua
-where lua54 >nul 2>nul && set LUA=lua54
-where lua5.4 >nul 2>nul && set LUA=lua5.4
+if not defined LUA if exist "lua55.exe" set LUA=lua55.exe
+if not defined LUA if exist "lua54.exe" set LUA=lua54.exe
+if not defined LUA if exist "lua53.exe" set LUA=lua53.exe
+if not defined LUA where lua55  >nul 2>nul && set LUA=lua55
+if not defined LUA where lua54  >nul 2>nul && set LUA=lua54
+if not defined LUA where lua5.5 >nul 2>nul && set LUA=lua5.5
+if not defined LUA where lua5.4 >nul 2>nul && set LUA=lua5.4
+if not defined LUA where lua5.3 >nul 2>nul && set LUA=lua5.3
+if not defined LUA where lua    >nul 2>nul && set LUA=lua
 
 if "%LUA%"=="" (
   echo.
   echo [!] Lua was not found on this computer.
   echo.
-  echo     Easiest fix: download lua54.exe from
+  echo     Easiest fix: download lua55.exe or lua54.exe from
   echo     https://sourceforge.net/projects/luabinaries/files/
-  echo     and copy it into this folder, then run this file again.
+  echo     and copy it (and its .dll file^) into this folder,
+  echo     then run this file again.
   echo     Full instructions: TESTING.md
   echo.
   pause
   exit /b 1
 )
+
+echo Using Lua: %LUA%
 
 echo ============================================
 echo  Najjar Pro - automatic test suite

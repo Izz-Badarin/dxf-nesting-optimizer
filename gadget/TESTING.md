@@ -28,15 +28,20 @@ Everything you need is inside the **`gadget/`** folder.
 ## Step 2 — Get Lua (one small free program)
 
 Najjar Pro runs on **Lua** — a tiny, free programming language.
+**Lua 5.3, 5.4 and 5.5 all work** (the whole test suite is verified on
+5.4 and 5.5).
 
 **Easiest way (no installation):**
 
-1. Download `lua-5.4.x_Win64_bin.zip` from
+1. Download the `*_bin.zip` for **5.5.x or 5.4.x** from
    **https://sourceforge.net/projects/luabinaries/files/** (open the
-   `5.4.x/` folder → `Windows Libraries` → `Win64` → the `..._bin.zip`)
+   version folder → `Windows Libraries` → `Win64` → the `..._bin.zip`)
 2. Extract it
-3. Copy **`lua54.exe`** (and `lua54.dll` if present) into the **`gadget`**
-   folder — next to `main.lua`. Done!
+3. Copy **`lua55.exe` (or `lua54.exe`) and its matching `.dll` file**
+   into the **`gadget`** folder — next to `main.lua`. Done!
+
+(`run-demo.bat` finds Lua automatically — in the gadget folder or on
+PATH, any of 5.3 / 5.4 / 5.5.)
 
 **If you use Chocolatey or Scoop:**
 
@@ -59,11 +64,11 @@ It will:
 3. Open the **previews in your browser**
 
 To run a demo in **Arabic** or **Hebrew**, open a command prompt in the
-`gadget` folder and type:
+`gadget` folder and type (`lua55` or `lua54` — whatever you copied):
 
 ```
-lua54 main.lua templates\kitchen-mixed.json out ar
-lua54 main.lua templates\kitchen-mixed.json out he
+lua55 main.lua templates\kitchen-mixed.json out ar
+lua55 main.lua templates\kitchen-mixed.json out he
 ```
 
 ---
@@ -113,7 +118,7 @@ against reality:
 3. Save it and run:
 
 ```
-lua54 main.lua templates\MY-CABINET.json out en
+lua55 main.lua templates\MY-CABINET.json out en
 ```
 
 4. Open `out\MY-CABINET_bom.csv` in Excel and check against your

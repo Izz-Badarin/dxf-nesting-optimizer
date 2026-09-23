@@ -1,6 +1,6 @@
 {
   "_help_1": "EDIT THE NUMBERS to match a real cabinet from your shop, save, then run:",
-  "_help_2": "lua54 main.lua templates/MY-CABINET.json out en",
+  "_help_2": "lua55 main.lua templates/MY-CABINET.json out en  (or lua54 - whichever you have)",
   "_help_3": "Every _help line is ignored by the system - it is only for you.",
 
   "project": "MY-CABINET",
