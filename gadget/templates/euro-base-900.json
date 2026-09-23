@@ -1,0 +1,24 @@
+{
+  "project": "euro-base-900",
+  "units": "mm",
+  "panel_material": { "thickness": 18.0, "name": "ply-birch-18" },
+  "cabinets": [
+    {
+      "id": "B1",
+      "width": 900.0,
+      "height": 720.0,
+      "depth": 560.0,
+      "construction": {
+        "panel_layout": "top_bottom_between_sides",
+        "back": {
+          "type": "grooved",
+          "thickness": 9.0,
+          "groove_depth": 8.0,
+          "groove_offset": 10.0
+        }
+      },
+      "shelves": { "count": 2, "adjustable": true, "clearance": 2.0, "setback": 10.0 },
+      "hardware": { "connector": "cabineo_12", "shelf_pins": "shelf_pin_5" }
+    }
+  ]
+}

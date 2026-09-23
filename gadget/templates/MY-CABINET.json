@@ -1,0 +1,64 @@
+{
+  "_help_1": "EDIT THE NUMBERS to match a real cabinet from your shop, save, then run:",
+  "_help_2": "lua54 main.lua templates/MY-CABINET.json out en",
+  "_help_3": "Every _help line is ignored by the system - it is only for you.",
+
+  "project": "MY-CABINET",
+
+  "_help_units": "mm or in - all numbers below are in this unit",
+  "units": "mm",
+
+  "_help_panel": "the board you build boxes from",
+  "panel_material": { "thickness": 18.0, "name": "ply-18" },
+
+  "_help_sheet": "your board size - used for the material estimate",
+  "sheet": { "width": 1220, "height": 2440 },
+
+  "_help_fronts": "overlay gaps: reveal = gap between doors/drawer fronts, edge = gap to cabinet edge",
+  "fronts": { "style": "full_overlay", "reveal": 3.0, "edge": 2.0 },
+
+  "cabinets": [
+    {
+      "_help_id": "any name - appears on every part label",
+      "id": "C1",
+
+      "_help_dims": "OUTSIDE dimensions of the cabinet",
+      "width": 800.0,
+      "height": 850.0,
+      "depth": 520.0,
+
+      "construction": {
+        "_help_back": "grooved = back panel in a groove; nailed = back nailed on the rear",
+        "back": { "type": "grooved", "thickness": 9.0, "groove_depth": 8.0, "groove_offset": 10.0 }
+      },
+
+      "_help_zones": "split the cabinet height into zones, from bottom (0) to top (height)",
+      "zones": [
+        {
+          "_help_z1": "drawers at the bottom - count = how many; box:true also cuts the drawer box",
+          "type": "drawers",
+          "from": 0,
+          "to": 300,
+          "drawers": { "count": 3, "box": true }
+        },
+        {
+          "_help_z2": "doors above - count 1-4; shelves = adjustable shelves BEHIND the doors",
+          "type": "door",
+          "from": 300,
+          "to": 850,
+          "doors": { "count": 2, "hinge_side": "left" },
+          "shelves": { "count": 2, "adjustable": true }
+        }
+      ],
+
+      "_help_hw": "hardware from the library - or write null to disable one",
+      "hardware": {
+        "connector": "cabineo_12",
+        "shelf_pins": "shelf_pin_5",
+        "hinges": "hinge_cup_35",
+        "slides": "slide_undermount",
+        "led_channel": null
+      }
+    }
+  ]
+}

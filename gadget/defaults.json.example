@@ -1,0 +1,7 @@
+{
+  "_comment": "Copy this file to defaults.json (next to main.lua). Every spec you run is merged over these values — your shop's baseline. Any spec can still override anything.",
+  "units": "mm",
+  "panel_material": { "thickness": 18.0, "name": "ply-18" },
+  "sheet": { "width": 1220, "height": 2440 },
+  "fronts": { "style": "full_overlay", "reveal": 3.0, "edge": 2.0 }
+}

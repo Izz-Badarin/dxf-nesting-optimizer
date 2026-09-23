@@ -1,0 +1,36 @@
+{
+  "project": "wardrobe-zones",
+  "units": "mm",
+  "panel_material": { "thickness": 18.0, "name": "ply-18" },
+  "sheet": { "width": 1220, "height": 2440 },
+  "materials": { "shelf": { "thickness": 16.0, "name": "ply-16" } },
+  "fronts": { "style": "full_overlay", "reveal": 3.0, "edge": 2.0 },
+  "cabinets": [
+    {
+      "id": "W1",
+      "width": 1000.0,
+      "height": 2000.0,
+      "depth": 550.0,
+      "construction": {
+        "panel_layout": "top_bottom_between_sides",
+        "back": { "type": "grooved", "thickness": 9.0, "groove_depth": 8.0, "groove_offset": 10.0 }
+      },
+      "zones": [
+        {
+          "type": "door",
+          "from": 0,
+          "to": 1600,
+          "doors": { "count": 2 },
+          "shelves": { "count": 4, "adjustable": true }
+        },
+        {
+          "type": "drawers",
+          "from": 1600,
+          "to": 2000,
+          "drawers": { "count": 3 }
+        }
+      ],
+      "hardware": { "connector": "cabineo_12", "shelf_pins": "shelf_pin_5", "hinges": "hinge_cup_35" }
+    }
+  ]
+}

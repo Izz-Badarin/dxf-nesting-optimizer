@@ -1,0 +1,19 @@
+{
+  "id": "hinge_cup_35",
+  "type": "hinge",
+  "display": {
+    "en": "Cup hinge \u00d835 (pattern 52 x 5.5)",
+    "he": "\u05e6\u05d9\u05e8 \u05db\u05d5\u05e1 \u00d835 (\u05d3\u05e4\u05d5\u05e1 52 x 5.5)",
+    "ar": "\u0645\u0641\u0635\u0644\u0629 \u0643\u0623\u0633 \u00d835 (\u0646\u0645\u0637 52 x 5.5)"
+  },
+  "verify": "Hettich-style pattern (cup O35 x 12.8 deep, screw holes O5.5 at 52 mm spacing) - verify cup_inset and end_margin against your hinge brand before production",
+  "cup": { "d": 35.0, "depth": 12.8 },
+  "cup_inset": 22.0,
+  "end_margin": 100.0,
+  "screw_holes": { "d": 5.5, "spacing": 52.0 },
+  "count_by_height": [
+    { "max": 900, "count": 2 },
+    { "max": 1600, "count": 3 },
+    { "max": 99999, "count": 4 }
+  ]
+}

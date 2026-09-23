@@ -12,3 +12,12 @@ venv/
 .coverage
 htmlcov/
 .DS_Store
+
+# Najjar Pro gadget outputs
+gadget/out/
+
+# local dev tooling (built Lua interpreter)
+tools/
+
+# shop-specific user defaults (keep the .example as reference)
+gadget/defaults.json
