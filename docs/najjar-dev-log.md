@@ -1,5 +1,42 @@
 # Najjar Pro — Development Log
 
+## 2026-09-23 — v0.6.0: the VCarve gadget shell ✅
+
+**Research:** vectric.com is network-blocked from the sandbox, but public
+GitHub gadget repos (tippmar/vectric-gadgets, PaulRowntree) provided the
+real API surface: `-- VECTRIC LUA SCRIPT` marker requirement,
+`main(script_path)` entry, `VectricJob()/job.Exists`,
+`HTML_Dialog(true, html, w, h, title)` + `GetTextField/GetCheckBox`,
+`job.LayerManager:GetLayerWithName(name)`, `Contour(0.0)` +
+`AppendPoint/LineTo/ArcTo(pt, 1.0)` (bulge 1 = 180° arc → circles),
+`layer:AddObject(CreateCadContour(c), true)`, `DisplayMessageBox`.
+
+**Built:**
+
+- **`vcarve/Najjar_Pro.lua`** — the installable entry: loads the headless
+  core through `package.preload` (zero core changes — the v0.5 adapter
+  bet paid off), a one-page wizard dialog (dimensions, construction,
+  hardware, language), validation, generation, drawing into the job, BOM +
+  DXF side files
+- **`vcarve/najjar_backend.lua`** — the real backend implementing
+  `create_layer/polyline/circle/text` against the live Vectric job
+  (circles via two 180° arcs; text attempts guarded with pcall)
+- **Packaging**: `tools/package-gadget.sh` + `.ps1` →
+  `gadget/release/NajjarPro.vgadget` (single-root-folder ZIP, exactly how
+  Vectric ships gadgets); CI now packages on every push
+- **`test_gadget_shell.lua`** — everything testable without VCarve:
+  syntax of both shell files, the required Vectric marker, dialog
+  field↔HTML consistency (every id read exists; every input is read),
+  assemble_spec goldens (door zones, disabled hardware, bad input
+  fallbacks), a full pipeline run from dialog values, and a render through
+  the real backend factory against a fake SDK
+- Tests: 486 → **545 assertions**
+
+**Status:** the shell has never run inside a live VCarve — first-run
+testing is the top item for v0.7, the moment the owner's license arrives.
+
+---
+
 ## 2026-09-23 — v0.5.0: corner joinery, edge banding, projects & the Vectric adapter ✅
 
 **Built:**

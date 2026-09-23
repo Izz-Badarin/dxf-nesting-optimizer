@@ -29,6 +29,7 @@ local tests = {
   "test_edge",
   "test_project",
   "test_vectric",
+  "test_gadget_shell",
 }
 
 for _, t in ipairs(tests) do

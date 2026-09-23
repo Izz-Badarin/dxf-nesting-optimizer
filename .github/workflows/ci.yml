@@ -62,6 +62,8 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lua5.4
       - name: Unit tests (headless gadget core)
         run: lua5.4 gadget/tests/run_tests.lua
+      - name: Package NajjarPro.vgadget
+        run: sh tools/package-gadget.sh
       - name: Smoke test - generate demo cabinet in all languages
         run: |
           cd gadget

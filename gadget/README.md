@@ -1,4 +1,4 @@
-# Najjar Pro — gadget core (v0.5.0)
+# Najjar Pro — gadget core (v0.6.0)
 
 > **Every shop has a carpenter. Now it has Najjar Pro.**
 > كُلّ ورشة عندها نجّار — هلق كمان عندها Najjar Pro
@@ -96,7 +96,35 @@ front reveals. **Every spec is merged over it** (the spec wins), so a
 4-line spec inherits your whole shop configuration. `defaults.json` is
 gitignored; each machine keeps its own.
 
-## Run it
+## The VCarve / Aspire gadget shell (v0.6) 🎯
+
+The installable gadget is ready: **`release/NajjarPro.vgadget`** (or build
+it yourself: `sh tools/package-gadget.sh` / `tools/package-gadget.ps1`).
+
+**Install (VCarve Pro / Aspire 11+):**
+
+1. Download `NajjarPro.vgadget` from this repository (`gadget/release/`)
+2. In VCarve/Aspire: **Gadgets → Install New Gadget…** → pick the file
+3. Restart the program, then: **Gadgets → Najjar Pro**
+4. Fill the wizard (dimensions → construction → hardware) → **OK**
+5. Every panel appears in the job on the layer contract
+   (`CUT`, `DRILL5_SHELF`, `POCKET_CABINEO`, `DRILL_CABINEO`,
+   `DRILL_HINGE`, `ETCH`); a BOM + DXF land in the gadget's `out/` folder
+
+The shell (`vcarve/Najjar_Pro.lua`) loads the *same headless core* through
+`package.preload`, renders through the backend adapter
+(`vcarve/najjar_backend.lua`), and follows the API patterns verified from
+public Vectric gadgets (`HTML_Dialog`, `Contour/AppendPoint/LineTo/ArcTo`,
+`LayerManager:GetLayerWithName`, `AddObject`). The first lines of both
+shell files carry the required `-- VECTRIC LUA SCRIPT` marker.
+
+⚠️ v0.6 is the shell spike: the API usage mirrors real public gadgets, but
+it has **not yet run inside a live VCarve** — that first-run test happens
+the moment a VCarve Pro license is available. The test-suite already
+covers everything short of it (545 assertions: syntax, dialog/field
+consistency, spec assembly, mock-render through a fake SDK).
+
+## Run it (headless)
 
 Requires any Lua 5.1+ (Lua 5.4 recommended). No other dependencies.
 
@@ -117,7 +145,7 @@ displays inches too.
 
 ```bash
 cd gadget
-lua tests/run_tests.lua     # 486 assertions
+lua tests/run_tests.lua     # 545 assertions
 ```
 
 ## Layout
@@ -141,6 +169,8 @@ src/najjar/         the core (pure Lua, no VCarve needed)
 hardware/*.json     HARDWARE LIBRARY — edit these, not the code
 lang/*.json         UI strings EN / HE / AR — community translations welcome
 templates/*.json    example specs: euro base, zoned wardrobe, mixed kitchen
+vcarve/            THE GADGET SHELL - installable in VCarve/Aspire
+release/           built NajjarPro.vgadget packages
 defaults.json.example  copy to defaults.json for your shop baseline
 tests/              unit tests + three golden fixtures
 tools/              dev tooling (build-lua.sh builds a standalone Lua)
@@ -202,7 +232,6 @@ signed off.**
 
 ## Roadmap
 
-v0.6 **VCarve gadget shell** — the real Vectric backend, wizard dialogs,
-drawing into the job, toolpath templates (needs a VCarve Pro / Aspire
-license) → v0.7 licensing + website.
+v0.7 shell hardening (live VCarve test, multi-page wizard, hardware
+ToolPickers, toolpath templates per layer) → v0.8 licensing + website.
 See the product plan for milestones and business model.

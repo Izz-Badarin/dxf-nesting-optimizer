@@ -151,6 +151,19 @@ Send me (in any language — Arabic, Hebrew, English):
 
 ---
 
+## Step 7 — Install inside VCarve / Aspire (when you have a license)
+
+1. Download **`NajjarPro.vgadget`** from `gadget/release/` in the repository
+2. In VCarve Pro / Aspire: **Gadgets → Install New Gadget…** → select it
+3. Restart, then **Gadgets → Najjar Pro**
+4. Fill the wizard and press OK — the cabinet should appear in the job,
+   each operation on its own layer
+
+If anything fails inside VCarve, note the exact error message (or
+screenshot) — the gadget shows load errors in a message box.
+
+---
+
 ## Fastest option of all
 
 Don't want to install anything yet? Just write me the cabinet's
