@@ -97,4 +97,94 @@ function M.render(parts, backend, layers)
   return backend
 end
 
+---
+-- Render the NESTED BOARDS through a backend (v0.10): one board outline
+-- after another, every part at its packed position - what the machine
+-- actually cuts. Parts placed rotated have their features rotated with
+-- them (90 degrees clockwise, in-plane: the machined face stays up and
+-- is never mirrored).
+--
+--   nesting     -- result of najjar.nest.pack()
+--   parts_by_id -- unique parts keyed by id (features + outline source)
+--   backend     -- create_layer/polyline/circle/text (mock or real)
+--   sheet       -- { width, height } board size
+--   opts        -- { gap = 100, board_label = "Board" }
+--
+function M.render_sheets(nesting, parts_by_id, backend, sheet, opts)
+  opts = opts or {}
+  if not nesting or not nesting.sheets or #nesting.sheets == 0 then
+    return backend -- nothing packed: nothing to draw
+  end
+  local gap = tonumber(opts.gap) or 100.0
+  local board_label = opts.board_label or "Board"
+  local layers_mod = require("najjar.layers")
+  local layers = opts.layers or layers_mod.DEFAULT
+
+  -- layers used by any part + the board boundary + labels
+  local used = { CUT = true, ETCH = true, CNC_BOUNDARY = true, INFO = true }
+  for _, part in pairs(parts_by_id) do
+    for _, f in ipairs(part.features or {}) do
+      used[f.layer] = true
+    end
+  end
+  for _, name in ipairs(layers_mod.ORDER) do
+    if used[name] then
+      backend.create_layer(name, layers[name] or 7)
+    end
+  end
+
+  for si, s in ipairs(nesting.sheets or {}) do
+    local dx = (si - 1) * (sheet.width + gap)
+    local dy = 0.0
+
+    -- board boundary + board label (below the board, like part labels)
+    backend.polyline("CNC_BOUNDARY", {
+      { dx, dy }, { dx + sheet.width, dy },
+      { dx + sheet.width, dy + sheet.height }, { dx, dy + sheet.height },
+    })
+    backend.text("INFO", dx, dy + sheet.height + 6, 12,
+      string.format("%s %d/%d  %gx%g", board_label, si, nesting.count or #nesting.sheets,
+                    sheet.width, sheet.height))
+
+    for _, pl in ipairs(s.placements) do
+      local part = parts_by_id[pl.id]
+      if part then
+        local px, py = pl.x + dx, pl.y + dy
+
+        -- outline at the packed position (pl.w/pl.h already rotated dims)
+        backend.polyline("CUT", {
+          { px, py }, { px + pl.w, py },
+          { px + pl.w, py + pl.h }, { px, py + pl.h },
+        })
+
+        -- feature transform: plain shift, or 90-degree clockwise rotation
+        -- (x, y) -> (px + part.h - y, py + x)  [part.h = rotated width]
+        local t
+        if pl.rotated then
+          t = function(fx, fy) return px + part.h - fy, py + fx end
+        else
+          t = function(fx, fy) return px + fx, py + fy end
+        end
+
+        for _, f in ipairs(part.features or {}) do
+          if f.kind == "hole" or f.kind == "pocket" then
+            local cx, cy = t(f.x, f.y)
+            backend.circle(f.layer, cx, cy, f.d / 2)
+          elseif f.kind == "groove" or f.kind == "slot" then
+            local x0, y0 = t(f.x0, f.y0)
+            local x1, y1 = t(f.x1, f.y1)
+            backend.polyline(f.layer, {
+              { x0, y0 }, { x1, y0 }, { x1, y1 }, { x0, y1 },
+            })
+          end
+        end
+
+        backend.text("ETCH", px, py + pl.h + 6, 10, pl.id)
+      end
+    end
+  end
+
+  return backend
+end
+
 return M

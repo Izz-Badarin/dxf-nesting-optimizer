@@ -197,6 +197,8 @@ I will add a map file for that app.
 2. In VCarve Pro / Aspire: **Gadgets → Install New Gadget…** → select it
 3. Restart, then **Gadgets → Najjar Pro**
 4. Fill the three wizard pages (Cabinet → Interior → Hardware & boards)
+   ("Draw nested boards" is on by default — the job shows every board
+   with its parts at the packed positions, ready to cut)
    and press OK — the cabinet should appear in the job, each operation on
    its own layer; BOM/DXF/nesting/3D viewer land in the gadget's `out/`
 

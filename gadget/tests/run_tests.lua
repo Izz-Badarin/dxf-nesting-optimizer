@@ -38,6 +38,7 @@ local tests = {
   "test_cost",
   "test_plinth",
   "test_fuzz",
+  "test_render_sheets",
 }
 
 for _, t in ipairs(tests) do

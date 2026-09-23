@@ -1,4 +1,4 @@
-# Najjar Pro — gadget core (v0.9.0)
+# Najjar Pro — gadget core (v0.10.0)
 
 > **Every shop has a carpenter. Now it has Najjar Pro.**
 > كُلّ ورشة عندها نجّار — هلق كمان عندها Najjar Pro
@@ -158,10 +158,18 @@ sits on it, and it explodes downward in the viewer. See
 commas, and fuzzed specs all fail cleanly with localized messages; a parity
 test guarantees every UI string exists in English, Hebrew AND Arabic.
 
-## The VCarve / Aspire gadget shell (v0.9) 🎯
+## The VCarve / Aspire gadget shell (v0.10) 🎯
 
 The installable gadget is ready: **`release/NajjarPro.vgadget`** (or build
 it yourself: `sh tools/package-gadget.sh` / `tools/package-gadget.ps1`).
+
+**v0.10 — the job becomes the cut file:** with *Draw nested boards*
+(default on) the gadget draws each board into the job — parts at their
+nested positions, rotated features rotated along (never mirrored), part
+labels on `ETCH`, board boundaries on `CNC_BOUNDARY`. Add your toolpath
+templates and post; no manual nesting inside VCarve. A first-run
+self-check verifies the VCarve API surface and reports anything missing
+in one clear message.
 
 **v0.9 — the full wizard, three pages, everything user-enterable:**
 
@@ -201,9 +209,9 @@ The first lines of both shell files carry the required
 ⚠️ the API usage mirrors real public gadgets, but it has **not yet run
 inside a live VCarve** — that first-run test happens the moment a VCarve
 Pro license is available. The test-suite covers everything short of it
-(1365 assertions: syntax, wizard page/field consistency, spec assembly,
-mock-render through a fake SDK, 3D model, checks, import, viewer, nesting,
-cost, fuzz).
+(1400 assertions: syntax, wizard page/field consistency, spec assembly,
+mock + board render through fake SDKs, 3D model, checks, import, viewer,
+nesting, cost, fuzz).
 
 The installable gadget is ready: **`release/NajjarPro.vgadget`** (or build
 it yourself: `sh tools/package-gadget.sh` / `tools/package-gadget.ps1`).
@@ -230,7 +238,7 @@ it has **not yet run inside a live VCarve** — that first-run test happens
 the moment a VCarve Pro license is available. The test-suite already
 covers everything short of it (1246 assertions: syntax, dialog/field
 consistency, spec assembly, mock-render through a fake SDK, 3D model,
-checks, import, viewer, nesting, cost, fuzz). The shell writes the 3D
+checks, import, viewer, nesting, nesting, cost, fuzz). The shell writes the 3D
 viewer, nesting sheets and dimension checks next to the BOM/DXF in the
 gadget's `out/` folder.
 
@@ -255,7 +263,7 @@ displays inches too.
 
 ```bash
 cd gadget
-lua tests/run_tests.lua     # 1365 assertions
+lua tests/run_tests.lua     # 1400 assertions
 ```
 
 ## Layout
@@ -342,6 +350,7 @@ signed off.**
 
 ## Roadmap
 
-v1.0: live VCarve first-run (needs a license), then licensing + website.
+v1.0: licensing (offline keys, trial mode) + website — after the
+live VCarve first-run (needs a license).
 See [`CHANGELOG.md`](CHANGELOG.md) for the full version history and the
 product plan for the business model.

@@ -1,6 +1,6 @@
 -- VECTRIC LUA SCRIPT
 --------------------------------------------------------------------------------
--- Najjar Pro — the VCarve / Aspire gadget shell (v0.9)
+-- Najjar Pro — the VCarve / Aspire gadget shell (v0.10)
 --
 -- "Every shop has a carpenter. Now it has Najjar Pro."
 --
@@ -22,7 +22,7 @@
 
 NajjarShell = {}
 
-local VERSION = "0.9.0"
+local VERSION = "0.10.0"
 
 -- wizard pages (v0.9): three steps, every configuration user-enterable.
 -- fields: { id, type = "text" | "check" | "select", label, value, help,
@@ -71,6 +71,7 @@ NajjarShell.PAGES = {
       { id = "Pricing.Board", type = "text", label = "Board price (per m2)", value = "45", help = "for the cost estimate" },
       { id = "Pricing.Edge",  type = "text", label = "Edge band price (per m)", value = "2", help = "for the cost estimate" },
       { id = "Pricing.Currency", type = "text", label = "Currency", value = "ILS", help = "3-letter code, e.g. ILS / JOD / USD / EUR" },
+      { id = "Output.SheetMode", type = "check", label = "Draw nested boards (ready to cut)", value = true, help = "parts drawn at their nested positions on each board, with labels and board boundaries" },
     },
   },
 }
@@ -86,6 +87,41 @@ end
 -- machining layers that can carry a toolpath template (v0.9): drop a
 -- <layer>.ToolpathTemplate file into the gadget's toolpaths/ folder and the
 -- shell loads it after drawing - real one-click toolpaths
+-- Vectric API entries this gadget needs / can use (v0.10). The self-check
+-- reports what a live VCarve build provides - it makes the first real run
+-- diagnosable instead of a mystery error.
+NajjarShell.REQUIRED_API = {
+  "VectricJob", "HTML_Dialog", "DisplayMessageBox",
+  "Contour", "Point2D", "CreateCadContour",
+}
+NajjarShell.OPTIONAL_API = { "ToolpathManager" }
+
+---
+-- Check an environment table (pass _G inside VCarve). Returns
+-- { missing_required = {name,...}, missing_optional = {name,...} }.
+---
+function NajjarShell.self_check(env)
+  env = env or _G
+  local res = { missing_required = {}, missing_optional = {} }
+  if type(env) ~= "table" then
+    for _, n in ipairs(NajjarShell.REQUIRED_API) do
+      res.missing_required[#res.missing_required + 1] = n
+    end
+    return res
+  end
+  for _, name in ipairs(NajjarShell.REQUIRED_API) do
+    if env[name] == nil then
+      res.missing_required[#res.missing_required + 1] = name
+    end
+  end
+  for _, name in ipairs(NajjarShell.OPTIONAL_API) do
+    if env[name] == nil then
+      res.missing_optional[#res.missing_optional + 1] = name
+    end
+  end
+  return res
+end
+
 NajjarShell.TEMPLATE_LAYERS = {
   "CUT", "DRILL5_SHELF", "DRILL5_SHELF_FLIP", "DRILL_CABINEO", "POCKET_CABINEO",
   "DRILL_HINGE", "DRILL_SLIDE", "LED_GROOVE", "BOX_GROOVE", "DRILL_DOWEL", "ETCH",
@@ -153,11 +189,12 @@ td       { padding: 3px 6px; }
 ]]
     if pg.title == "Hardware & boards" then
       out[#out + 1] = [[
-<p class="Help">Parts are drawn on layers (CUT, DRILL5_SHELF, POCKET_CABINEO,
-DRILL_CABINEO, DRILL_HINGE, ...). Save one toolpath template per layer as
-toolpaths/&lt;layer&gt;.ToolpathTemplate in the gadget folder and they load
-automatically. Labels, BOM, nesting sheets and the 3D viewer land in the
-gadget's out/ folder.</p>
+<p class="Help">With "Draw nested boards" the job shows every board with its
+parts at the packed positions - ready to cut. Parts sit on layers (CUT,
+DRILL5_SHELF, POCKET_CABINEO, DRILL_CABINEO, DRILL_HINGE, ...). Save one
+toolpath template per layer as toolpaths/&lt;layer&gt;.ToolpathTemplate in the
+gadget folder and they load automatically. Labels, BOM, nesting sheets and
+the 3D viewer land in the gadget's out/ folder.</p>
 ]]
     end
   end
@@ -327,6 +364,15 @@ function main(script_path)
     return false
   end
 
+  -- 2b. first-run environment check (v0.10) ------------------------------------
+  local diag = NajjarShell.self_check(_G)
+  if #diag.missing_required > 0 then
+    DisplayMessageBox("Najjar Pro: this VCarve build is missing expected API entries:\n" ..
+                      table.concat(diag.missing_required, ", ") ..
+                      "\n\nThe gadget will try to continue. If anything fails," ..
+                      " send this list to support.")
+  end
+
   -- 3. wizard: three pages (cabinet -> interior -> hardware & boards) ---------
   -- OK advances to the next page, Cancel stops quietly
   local d = {}
@@ -393,7 +439,15 @@ function main(script_path)
   -- 6. draw into the job through the real backend -------------------------------
   local backend_factory = dofile(base .. "/najjar_backend.lua")
   local backend = backend_factory(job)
-  vectric.render(parts, backend)
+  if d["Output.SheetMode"] == true then
+    -- v0.10: the job becomes the cut file - every board drawn with its
+    -- parts at the nested positions, board boundaries and labels
+    local by_id = {}
+    for _, p in ipairs(parts) do by_id[p.id] = p end
+    vectric.render_sheets(nesting, by_id, backend, spec.sheet)
+  else
+    vectric.render(parts, backend)
+  end
 
   -- 7. side files (BOM + DXF next to the job file when possible) -----------------
   pcall(function()

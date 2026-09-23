@@ -3,6 +3,22 @@
 Commercial Vectric gadget for parametric cabinet building.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.10.0] — 2026-09-23
+
+### Added
+- **Board-ready drawing into VCarve** (`vectric.render_sheets`): the
+  gadget can now draw the *nested boards* into the job — every part at its
+  packed position on each board, features rotated with rotated parts
+  (90° in-plane, never mirrored), part labels on `ETCH`, board boundaries
+  on `CNC_BOUNDARY`, board labels on `INFO`. The VCarve job becomes the
+  cut file. Wizard switch: *Draw nested boards* (default on); off = the
+  classic per-part layout for editing.
+- **First-run environment self-check** (`NajjarShell.self_check`): inside
+  VCarve the gadget verifies the API surface it needs (VectricJob,
+  HTML_Dialog, Contour, CreateCadContour, …) and reports anything missing
+  in one clear message — the first live run is diagnosable, not a mystery
+  error. ToolpathManager is checked as optional.
+
 ## [0.9.0] — 2026-09-23
 
 ### Added

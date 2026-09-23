@@ -383,3 +383,39 @@ round).
 
 Roadmap: v1.0 = live VCarve first-run when the license arrives, licensing
 + website after.
+
+---
+
+## v0.10.0 — board-ready VCarve drawing + self-check (2026-09-23)
+
+**User directive:** "upgrade the app first to be fully with VCarve Pro,
+before starting licensing."
+
+Goal: the deepest real-VCarve integration possible without a live license.
+
+- Investigated `SheetManager` in the verified public gadgets: only
+  read-side usage (ActiveSheetId, sheet lists for toolpath reordering) —
+  no verified sheet-creation call, so the safe route is drawing boards
+  side by side with boundaries, not gambling on an unverified API.
+- **`vectric.render_sheets`** — draws the nesting result through any
+  backend: per board a CNC_BOUNDARY rectangle + INFO board label; per
+  placement the outline at the packed position, features transformed
+  (90° CW in-plane rotation: `(x,y) -> (px + part.h − y, py + x)`, face
+  never mirrored), ETCH part label above each rect; boards offset by
+  width + 100 mm gap. Works against the mock (tests) and the real
+  backend unchanged (same 4-method contract).
+- **Wizard switch** `Output.SheetMode` (page 3, default on): on = the
+  job becomes the cut file; off = classic per-part layout for editing.
+- **`NajjarShell.self_check(env)`** — REQUIRED_API (VectricJob,
+  HTML_Dialog, DisplayMessageBox, Contour, Point2D, CreateCadContour) +
+  OPTIONAL_API (ToolpathManager); main() warns once with the missing
+  list instead of failing mysteriously on the first live run.
+- Tests: exact-coordinate cases (straight + rotated placement transforms,
+  sheet offsets, label positions), empty-nesting guard, kitchen-job
+  golden end-to-end (38 outlines, every feature on every instance,
+  5 boundaries, 43 labels — counts derived from the parts themselves),
+  self-check with full/old/nil environments. **1400 assertions green on
+  Lua 5.4.6 + 5.5.1** (1365 → 1400).
+
+Next per the owner's directive: **licensing** (offline keys, trial mode)
+after the live VCarve first-run.
