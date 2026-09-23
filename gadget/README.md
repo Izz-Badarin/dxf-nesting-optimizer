@@ -1,4 +1,4 @@
-# Najjar Pro — gadget core (v0.8.0)
+# Najjar Pro — gadget core (v0.9.0)
 
 > **Every shop has a carpenter. Now it has Najjar Pro.**
 > كُلّ ورشة عندها نجّار — هلق كمان عندها Najjar Pro
@@ -158,7 +158,52 @@ sits on it, and it explodes downward in the viewer. See
 commas, and fuzzed specs all fail cleanly with localized messages; a parity
 test guarantees every UI string exists in English, Hebrew AND Arabic.
 
-## The VCarve / Aspire gadget shell (v0.6) 🎯
+## The VCarve / Aspire gadget shell (v0.9) 🎯
+
+The installable gadget is ready: **`release/NajjarPro.vgadget`** (or build
+it yourself: `sh tools/package-gadget.sh` / `tools/package-gadget.ps1`).
+
+**v0.9 — the full wizard, three pages, everything user-enterable:**
+
+1. **Cabinet** — name, ID, width/height/depth, panel thickness, units,
+   back construction, language
+2. **Interior** — shelves (+adjustable), doors (count), drawer zone
+   (count, boxed drawers), plinth/toe-kick (height)
+3. **Hardware & boards** — connectors, shelf pins, hinges, board size,
+   saw kerf, trim margin, board price/m², edge price/m, currency
+
+**One-click toolpaths:** save one toolpath template per layer into the
+gadget's `toolpaths/` folder (`CUT.ToolpathTemplate`,
+`POCKET_CABINEO.ToolpathTemplate`, … — see `toolpaths/README.md`); the
+gadget loads them after drawing and the toolpath list fills itself.
+The API (`ToolpathManager():LoadToolpathTemplate(path)`) is verified
+against public Vectric gadgets.
+
+**Install (VCarve Pro / Aspire 11+):**
+
+1. Download `NajjarPro.vgadget` from this repository (`gadget/release/`)
+2. In VCarve/Aspire: **Gadgets → Install New Gadget…** → pick the file
+3. Restart the program, then: **Gadgets → Najjar Pro**
+4. Fill the three wizard pages → **OK** on the last page
+5. Every panel appears in the job on the layer contract; BOM, DXF,
+   nesting sheets, the 3D viewer and the cost estimate land in the
+   gadget's `out/` folder; toolpath templates (if present) load
+   automatically
+
+The shell (`vcarve/Najjar_Pro.lua`) loads the *same headless core* through
+`package.preload`, renders through the backend adapter
+(`vcarve/najjar_backend.lua`), and follows the API patterns verified from
+public Vectric gadgets (`HTML_Dialog`, `Contour/AppendPoint/LineTo/ArcTo`,
+`LayerManager:GetLayerWithName`, `AddObject`, `ToolpathManager`).
+The first lines of both shell files carry the required
+`-- VECTRIC LUA SCRIPT` marker.
+
+⚠️ the API usage mirrors real public gadgets, but it has **not yet run
+inside a live VCarve** — that first-run test happens the moment a VCarve
+Pro license is available. The test-suite covers everything short of it
+(1365 assertions: syntax, wizard page/field consistency, spec assembly,
+mock-render through a fake SDK, 3D model, checks, import, viewer, nesting,
+cost, fuzz).
 
 The installable gadget is ready: **`release/NajjarPro.vgadget`** (or build
 it yourself: `sh tools/package-gadget.sh` / `tools/package-gadget.ps1`).
@@ -210,7 +255,7 @@ displays inches too.
 
 ```bash
 cd gadget
-lua tests/run_tests.lua     # 1246 assertions
+lua tests/run_tests.lua     # 1365 assertions
 ```
 
 ## Layout
@@ -297,7 +342,6 @@ signed off.**
 
 ## Roadmap
 
-v0.9 shell hardening (live VCarve test, multi-page wizard, hardware
-ToolPickers, toolpath templates per layer) → v1.0 licensing + website.
+v1.0: live VCarve first-run (needs a license), then licensing + website.
 See [`CHANGELOG.md`](CHANGELOG.md) for the full version history and the
 product plan for the business model.

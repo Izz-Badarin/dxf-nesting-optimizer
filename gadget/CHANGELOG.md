@@ -3,6 +3,24 @@
 Commercial Vectric gadget for parametric cabinet building.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.9.0] — 2026-09-23
+
+### Added
+- **Three-page wizard** in the gadget shell (Cabinet → Interior → Hardware
+  & boards). Every configuration is now user-enterable inside VCarve:
+  drawer zone (count), plinth/toe-kick (height), board size, saw kerf,
+  trim margin, and all cost prices (board/m2, edge/m, currency).
+- **One-click toolpath templates**: drop `<layer>.ToolpathTemplate` files
+  into the gadget's `toolpaths/` folder (created once via VCarve's
+  *Save Template As…*) and the shell loads them through the verified
+  `ToolpathManager:LoadToolpathTemplate` API after drawing — the toolpath
+  list fills itself. `toolpaths/README.md` documents the 10-minute setup.
+- Drawer zone in the wizard: 250 mm per drawer, drawer boxes included,
+  doors or an open zone above automatically.
+
+### Fixed
+- Wizard currency field sanitized (letters only, falls back to ILS).
+
 ## [0.8.0] — 2026-09-23
 
 ### Added

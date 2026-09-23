@@ -12,12 +12,14 @@ New-Item -ItemType Directory -Force -Path (Join-Path $Stage "NajjarPro\src\najja
 New-Item -ItemType Directory -Force -Path (Join-Path $Stage "NajjarPro\hardware") | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $Stage "NajjarPro\lang") | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $Stage "NajjarPro\importers") | Out-Null
+New-Item -ItemType Directory -Force -Path (Join-Path $Stage "NajjarPro\toolpaths") | Out-Null
 
 Copy-Item (Join-Path $Gadget "vcarve\*.lua") (Join-Path $Stage "NajjarPro")
 Copy-Item (Join-Path $Gadget "src\najjar\*.lua") (Join-Path $Stage "NajjarPro\src\najjar")
 Copy-Item (Join-Path $Gadget "hardware\*.json") (Join-Path $Stage "NajjarPro\hardware")
 Copy-Item (Join-Path $Gadget "lang\*.json") (Join-Path $Stage "NajjarPro\lang")
 Copy-Item (Join-Path $Gadget "importers\*.json") (Join-Path $Stage "NajjarPro\importers")
+if (Test-Path (Join-Path $Gadget "toolpaths")) { Copy-Item (Join-Path $Gadget "toolpaths\*") (Join-Path $Stage "NajjarPro\toolpaths") }
 
 $Vgadget = Join-Path $Out "NajjarPro.vgadget"
 if (Test-Path $Vgadget) { Remove-Item $Vgadget }

@@ -347,3 +347,39 @@ Professional-gap round — the four things a shop actually asks for:
 added (keep-a-changelog format). Hardware JSONs now carry editable
 placeholder prices. Roadmap: v0.9 = shell hardening (live VCarve first-run
 when the license arrives), v1.0 = licensing + website.
+
+---
+
+## v0.9.0 — shell hardening: full wizard + one-click toolpaths (2026-09-23)
+
+**User directive:** "do it" (continue the announced v0.9 shell-hardening
+round).
+
+- Re-cloned the public gadget references (sandbox reset had wiped
+  tools/_gadgets-tm) and **verified the toolpath API from real source**:
+  `ToolpathManager()` global, `:LoadToolpathTemplate(path)` (rebuilds a
+  toolpath from a `.ToolpathTemplate` file; prompts "apply to all
+  sheets?" which the API cannot suppress — documented, answer No),
+  `:SaveToolpathAsTemplate`, list iteration via GetHeadPosition/GetNext.
+- **Three-page wizard** (sequential HTML_Dialogs, step x of 3 in the
+  title): every v0.7/v0.8 configuration is now user-enterable inside
+  VCarve — drawer zone (250 mm/drawer, auto-capped at H-150, refitted
+  count), plinth, board size, kerf, margin, all three prices + currency.
+  Pages/fields are data (NajjarShell.PAGES); READ_IDS derives from them,
+  so the headless consistency test covers every id automatically.
+- **Toolpath template loader**: `NajjarShell.load_toolpath_templates` —
+  fixed filenames per the 11-layer machining contract, io.open existence
+  check, pcall'd LoadToolpathTemplate, loaded/failed lists; final message
+  reports what loaded (or how to set it up). `toolpaths/README.md`
+  documents the owner's one-time 10-minute setup.
+- assemble_spec: drawers+doors / drawers+open-with-shelves / legacy plain
+  paths; currency sanitized to A-Z (digits snuck through the first
+  version — test caught it).
+- Tests: page/id consistency (per page + flattened), full wizard spec
+  through the real pipeline (plinth/doors/fronts/drawer boxes/nest/cost,
+  JOD currency end-to-end), drawer cap, template loader with fake
+  manager (success/failure/empty-dir). **1365 assertions green on
+  Lua 5.4.6 + 5.5.1** (1246 → 1365).
+
+Roadmap: v1.0 = live VCarve first-run when the license arrives, licensing
++ website after.

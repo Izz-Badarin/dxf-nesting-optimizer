@@ -188,3 +188,169 @@ if ok then
 end
 -- restore the environment (they were nil before)
 Contour, Point2D, CreateCadContour = _Contour, _Point2D, _CreateCadContour
+
+--------------------------------------------------------------------------------
+-- v0.9: the three-page wizard + toolpath templates
+--------------------------------------------------------------------------------
+
+-- PAGES <-> READ_IDS consistency ------------------------------------------------
+H.check(#NajjarShell.PAGES == 3, "three wizard pages")
+local page_ids = {}
+for _, page in ipairs(NajjarShell.PAGES) do
+  for _, fld in ipairs(page.fields) do
+    page_ids[#page_ids + 1] = fld.id
+  end
+end
+H.eq(#page_ids, #NajjarShell.READ_IDS, "READ_IDS = flattened pages")
+for i, id in ipairs(NajjarShell.READ_IDS) do
+  H.eq(page_ids[i], id, "page order matches READ_IDS at " .. i)
+end
+
+-- each page contains its own ids and nobody else's -------------------------------
+local function ids_in(html)
+  local s = {}
+  for id in html:gmatch('id="([^"]+)"') do s[id] = true end
+  return s
+end
+local page1, page2, page3 = ids_in(NajjarShell.build_html(1)),
+                            ids_in(NajjarShell.build_html(2)),
+                            ids_in(NajjarShell.build_html(3))
+H.check(page1["Cabinet.Width"] and not page1["Cabinet.Shelves"], "page 1: cabinet dims only")
+H.check(page2["Cabinet.DrawerZone"] and not page2["Sheet.Width"], "page 2: interior only")
+H.check(page3["Sheet.Kerf"] and page3["Pricing.Currency"] and not page3["Cabinet.Width"],
+        "page 3: hardware + boards + prices")
+-- every field type is declared
+for _, page in ipairs(NajjarShell.PAGES) do
+  for _, fld in ipairs(page.fields) do
+    H.check(fld.type == "text" or fld.type == "check" or fld.type == "select",
+            "field type declared: " .. fld.id)
+  end
+end
+
+-- assemble_spec: the full wizard (drawers + doors + plinth + pricing) -------------
+local full = NajjarShell.assemble_spec({
+  ["Project.Name"] = "wizard job",
+  ["Cabinet.ID"] = "W1",
+  ["Cabinet.Width"] = "900", ["Cabinet.Height"] = "900", ["Cabinet.Depth"] = "550",
+  ["Cabinet.Thickness"] = "18", ["Cabinet.Units"] = "mm", ["Cabinet.Back"] = "grooved",
+  ["Panel.Language"] = "he",
+  ["Cabinet.Shelves"] = "2", ["Cabinet.Adjustable"] = true,
+  ["Cabinet.DoorZone"] = true, ["Cabinet.DoorCount"] = "2",
+  ["Cabinet.DrawerZone"] = true, ["Cabinet.DrawerCount"] = "2",
+  ["Cabinet.Plinth"] = true, ["Cabinet.PlinthHeight"] = "100",
+  ["Hardware.Connector"] = true, ["Hardware.Pins"] = true, ["Hardware.Hinges"] = true,
+  ["Sheet.Width"] = "1220", ["Sheet.Height"] = "2440",
+  ["Sheet.Kerf"] = "4.5", ["Sheet.Margin"] = "10",
+  ["Pricing.Board"] = "60", ["Pricing.Edge"] = "2.5", ["Pricing.Currency"] = "jod ",
+})
+H.eq(full.project, "wizard job", "wizard: project name")
+H.eq(full.sheet.kerf, 4.5, "wizard: kerf carried into the spec")
+H.eq(full.sheet.margin, 10, "wizard: margin carried")
+H.eq(full.pricing.currency, "JOD", "wizard: currency sanitized + upper")
+H.check(full.cabinets[1].construction.plinth ~= nil, "wizard: plinth attached")
+H.eq(full.cabinets[1].construction.plinth.height, 100, "wizard: plinth height")
+local wz = full.cabinets[1].zones
+H.eq(#wz, 2, "wizard: drawers + doors zones")
+H.eq(wz[1].type, "drawers", "wizard: drawers at the bottom")
+H.eq(wz[1].to, 500, "wizard: 2 drawers x 250")
+H.eq(wz[2].type, "door", "wizard: doors above the drawers")
+H.eq(wz[2].from, 500, "wizard: door zone starts at the drawer top")
+H.eq(wz[2].shelves.count, 2, "wizard: shelves behind the doors")
+
+-- the full wizard spec runs through the real core pipeline -----------------------
+local specmod = require("najjar.spec")
+local rules = require("najjar.rules")
+local hardware = require("najjar.hardware")
+local geometry = require("najjar.geometry")
+local costmod = require("najjar.cost")
+local nestmod = require("najjar.nest")
+local spec_w = specmod.normalize(full)
+H.check(spec_w ~= nil, "wizard spec validates")
+local hwlib = hardware.load(fs.join(fs.join(T_DIR, ".."), "hardware"))
+local panels_w = rules.decompose(spec_w.cabinets[1], spec_w)
+hardware.place(hwlib, spec_w.cabinets[1], panels_w)
+local roles = {}
+for _, pn in ipairs(panels_w) do roles[pn.role] = true end
+H.check(roles.plinth, "wizard pipeline: plinth part generated")
+H.check(roles.door, "wizard pipeline: doors generated")
+H.check(roles.front, "wizard pipeline: drawer fronts generated")
+H.check(roles.drawer_side, "wizard pipeline: drawer boxes generated")
+local parts_w = geometry.build_parts(panels_w)
+geometry.layout(parts_w)
+local nesting_w = nestmod.pack(parts_w, spec_w.sheet,
+  { kerf = spec_w.sheet.kerf, margin = spec_w.sheet.margin })
+H.check(nesting_w.count >= 1, "wizard pipeline: nests onto boards")
+local cost_w = costmod.estimate(parts_w, spec_w, hwlib, nesting_w.count)
+H.check(cost_w.total > 0, "wizard pipeline: cost estimated")
+H.eq(cost_w.currency, "JOD", "wizard pipeline: currency flows to the quote")
+
+-- drawers only: open zone above with shelves --------------------------------------
+local dro = NajjarShell.assemble_spec({
+  ["Cabinet.Width"] = "600", ["Cabinet.Height"] = "900", ["Cabinet.Depth"] = "500",
+  ["Cabinet.Shelves"] = "3", ["Cabinet.Adjustable"] = true,
+  ["Cabinet.DrawerZone"] = true, ["Cabinet.DrawerCount"] = "2",
+})
+local dz = dro.cabinets[1].zones
+H.eq(#dz, 2, "drawers-only: drawers + open zones")
+H.eq(dz[2].type, "open", "drawers-only: open zone above")
+H.eq(dz[2].shelves.count, 3, "drawers-only: shelves live in the open zone")
+H.check(dro.cabinets[1].shelves == nil, "drawers-only: no legacy shelf row")
+
+-- drawer cap: 6 drawers on a 900 cabinet -> capped at 750 (3 x 250) ---------------
+local cap = NajjarShell.assemble_spec({
+  ["Cabinet.Width"] = "600", ["Cabinet.Height"] = "900", ["Cabinet.Depth"] = "500",
+  ["Cabinet.DrawerZone"] = true, ["Cabinet.DrawerCount"] = "6",
+})
+H.eq(cap.cabinets[1].zones[1].to, 750, "drawer zone capped at H-150")
+H.eq(cap.cabinets[1].zones[1].drawers.count, 3, "drawer count refitted to the cap")
+
+-- nothing checked: legacy plain cabinet, no zones, no plinth ------------------------
+local plain = NajjarShell.assemble_spec({
+  ["Cabinet.Width"] = "600", ["Cabinet.Height"] = "700", ["Cabinet.Depth"] = "500",
+  ["Cabinet.Shelves"] = "1",
+})
+H.check(plain.cabinets[1].zones == nil, "plain: no zones")
+H.eq(plain.cabinets[1].shelves.count, 1, "plain: legacy shelf row")
+H.check(plain.cabinets[1].construction.plinth == nil, "plain: no plinth")
+
+-- currency sanitizing ----------------------------------------------------------------
+H.eq(NajjarShell.assemble_spec({
+  ["Cabinet.Width"] = "600", ["Cabinet.Height"] = "700", ["Cabinet.Depth"] = "500",
+  ["Pricing.Currency"] = "1!@",
+}).pricing.currency, "ILS", "garbage currency falls back to ILS")
+
+-- toolpath template loader (fake manager + real files on disk) ------------------------
+local tmp_base = os.tmpname()
+os.remove(tmp_base)
+fs.mkdir(tmp_base)
+fs.mkdir(tmp_base .. "/toolpaths")
+fs.writefile(tmp_base .. "/toolpaths/CUT.ToolpathTemplate", "fake")
+fs.writefile(tmp_base .. "/toolpaths/DRILL_HINGE.ToolpathTemplate", "fake")
+fs.writefile(tmp_base .. "/toolpaths/Broken.ToolpathTemplate", "ignored - not a layer")
+local calls = {}
+local fake_manager = {}
+function fake_manager:LoadToolpathTemplate(path)
+  calls[#calls + 1] = path
+  return true
+end
+local loaded, failed = NajjarShell.load_toolpath_templates(tmp_base, fake_manager)
+H.eq(#loaded, 2, "templates loaded: CUT + DRILL_HINGE")
+H.eq(loaded[1], "CUT", "load order follows the layer contract")
+H.eq(loaded[2], "DRILL_HINGE", "second template")
+H.eq(#failed, 0, "no failures")
+H.eq(#calls, 2, "manager asked exactly twice (broken file ignored)")
+local boom = {}
+function boom:LoadToolpathTemplate(path) error("nope") end
+local loaded2, failed2 = NajjarShell.load_toolpath_templates(tmp_base, boom)
+H.eq(#loaded2, 0, "failing manager: nothing loaded")
+H.eq(#failed2, 2, "failing manager: both reported failed")
+-- empty folder: clean empties
+local empty_base = os.tmpname()
+os.remove(empty_base)
+fs.mkdir(empty_base)
+local l3, f3 = NajjarShell.load_toolpath_templates(empty_base, fake_manager)
+H.eq(#l3 + #f3, 0, "no toolpaths folder content -> nothing attempted")
+os.remove(tmp_base .. "/toolpaths/CUT.ToolpathTemplate")
+os.remove(tmp_base .. "/toolpaths/DRILL_HINGE.ToolpathTemplate")
+os.remove(tmp_base .. "/toolpaths/Broken.ToolpathTemplate")
+os.remove(empty_base)

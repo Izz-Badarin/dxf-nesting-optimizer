@@ -196,8 +196,16 @@ I will add a map file for that app.
 1. Download **`NajjarPro.vgadget`** from `gadget/release/` in the repository
 2. In VCarve Pro / Aspire: **Gadgets → Install New Gadget…** → select it
 3. Restart, then **Gadgets → Najjar Pro**
-4. Fill the wizard and press OK — the cabinet should appear in the job,
-   each operation on its own layer
+4. Fill the three wizard pages (Cabinet → Interior → Hardware & boards)
+   and press OK — the cabinet should appear in the job, each operation on
+   its own layer; BOM/DXF/nesting/3D viewer land in the gadget's `out/`
+
+**One-click toolpaths (do once, ~10 min):** create a toolpath for a layer
+(e.g. profile cut on `CUT`), then *Save Template As…*
+`CUT.ToolpathTemplate` into the gadget's `toolpaths/` folder. Repeat per
+layer. From then on every gadget run loads them automatically —
+see `toolpaths/README.md`. When VCarve asks to apply templates to all
+sheets, answer **No**.
 
 If anything fails inside VCarve, note the exact error message (or
 screenshot) — the gadget shows load errors in a message box.

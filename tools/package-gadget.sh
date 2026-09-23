@@ -14,12 +14,13 @@ mkdir -p "$OUT"
 
 # single root folder named after the gadget
 PKG="$STAGE/NajjarPro"
-mkdir -p "$PKG/src/najjar" "$PKG/hardware" "$PKG/lang" "$PKG/importers"
+mkdir -p "$PKG/src/najjar" "$PKG/hardware" "$PKG/lang" "$PKG/importers" "$PKG/toolpaths"
 
 cp "$GADGET/vcarve/"*.lua "$PKG/"
 cp "$GADGET/src/najjar/"*.lua "$PKG/src/najjar/"
 cp "$GADGET/hardware/"*.json "$PKG/hardware/"
 cp "$GADGET/importers/"*.json "$PKG/importers/"
+cp "$GADGET/toolpaths/"* "$PKG/toolpaths/" 2>/dev/null || true
 cp "$GADGET/lang/"*.json "$PKG/lang/"
 
 # zip the folder so the archive root contains NajjarPro/

@@ -1,6 +1,6 @@
 -- VECTRIC LUA SCRIPT
 --------------------------------------------------------------------------------
--- Najjar Pro — the VCarve / Aspire gadget shell (v0.6)
+-- Najjar Pro — the VCarve / Aspire gadget shell (v0.9)
 --
 -- "Every shop has a carpenter. Now it has Najjar Pro."
 --
@@ -22,27 +22,73 @@
 
 NajjarShell = {}
 
-local VERSION = "0.6.0"
+local VERSION = "0.9.0"
 
--- fields read from the dialog (kept in one table so the test-suite can
--- verify that every id exists in the HTML and vice versa)
-NajjarShell.READ_IDS = {
-  "Project.Name",
-  "Cabinet.ID",
-  "Cabinet.Width",
-  "Cabinet.Height",
-  "Cabinet.Depth",
-  "Cabinet.Thickness",
-  "Cabinet.Units",
-  "Cabinet.Back",
-  "Cabinet.Shelves",
-  "Cabinet.Adjustable",
-  "Cabinet.DoorZone",
-  "Cabinet.DoorCount",
-  "Hardware.Connector",
-  "Hardware.Pins",
-  "Hardware.Hinges",
-  "Panel.Language",
+-- wizard pages (v0.9): three steps, every configuration user-enterable.
+-- fields: { id, type = "text" | "check" | "select", label, value, help,
+--           options = { {value, label}, ... } }
+NajjarShell.PAGES = {
+  {
+    title = "Cabinet",
+    fields = {
+      { id = "Project.Name",  type = "text", label = "Project name", value = "najjar-job", help = "appears in file names and the BOM" },
+      { id = "Cabinet.ID",    type = "text", label = "Cabinet ID", value = "C1", help = "prefix for every part label" },
+      { id = "Cabinet.Width",  type = "text", label = "Width", value = "900", help = "outside width" },
+      { id = "Cabinet.Height", type = "text", label = "Height", value = "900", help = "outside height" },
+      { id = "Cabinet.Depth",  type = "text", label = "Depth", value = "550", help = "outside depth" },
+      { id = "Cabinet.Thickness", type = "text", label = "Panel thickness (mm)", value = "18", help = "box panel thickness" },
+      { id = "Cabinet.Units", type = "select", label = "Units", help = "mm or in",
+        options = { { "mm", "mm" }, { "in", "inch" } } },
+      { id = "Cabinet.Back",  type = "select", label = "Back", help = "back panel construction",
+        options = { { "grooved", "grooved (in side grooves)" }, { "nailed", "nailed on rear" } } },
+      { id = "Panel.Language", type = "select", label = "Language", help = "labels and BOM language",
+        options = { { "en", "English" }, { "he", "Hebrew" }, { "ar", "Arabic" } } },
+    },
+  },
+  {
+    title = "Interior",
+    fields = {
+      { id = "Cabinet.Shelves", type = "text", label = "Shelves", value = "2", help = "shelf count (0 = none)" },
+      { id = "Cabinet.Adjustable", type = "check", label = "Shelves adjustable (pin rows)", value = true, help = "system-32 pin ladders on the sides" },
+      { id = "Cabinet.DoorZone", type = "check", label = "Doors", value = false, help = "doors over the top zone, with hinge drilling" },
+      { id = "Cabinet.DoorCount", type = "text", label = "Door count (1-4)", value = "2", help = "doors across the cabinet width" },
+      { id = "Cabinet.DrawerZone", type = "check", label = "Drawer zone (bottom)", value = false, help = "drawer fronts + boxes at the bottom, 250 mm each" },
+      { id = "Cabinet.DrawerCount", type = "text", label = "Drawers in zone (1-6)", value = "2", help = "stacked drawer fronts" },
+      { id = "Cabinet.Plinth", type = "check", label = "Plinth / toe-kick", value = false, help = "strip under the body, recessed 50 mm" },
+      { id = "Cabinet.PlinthHeight", type = "text", label = "Plinth height (mm)", value = "100", help = "40 - 400 mm" },
+    },
+  },
+  {
+    title = "Hardware & boards",
+    fields = {
+      { id = "Hardware.Connector", type = "check", label = "Cabineo 12 connectors", value = true, help = "O15 pocket + O5 drill at every box joint" },
+      { id = "Hardware.Pins", type = "check", label = "Shelf pins (system 32)", value = true, help = "O5 holes, 32 mm pitch" },
+      { id = "Hardware.Hinges", type = "check", label = "Cup hinges (O35)", value = true, help = "hinge drilling on doors" },
+      { id = "Sheet.Width",  type = "text", label = "Board width (mm)", value = "1220", help = "sheet size for nesting" },
+      { id = "Sheet.Height", type = "text", label = "Board length (mm)", value = "2440", help = "sheet size for nesting" },
+      { id = "Sheet.Kerf",   type = "text", label = "Saw kerf (mm)", value = "4", help = "blade width kept between parts" },
+      { id = "Sheet.Margin", type = "text", label = "Board trim (mm)", value = "8", help = "unused edge on every side" },
+      { id = "Pricing.Board", type = "text", label = "Board price (per m2)", value = "45", help = "for the cost estimate" },
+      { id = "Pricing.Edge",  type = "text", label = "Edge band price (per m)", value = "2", help = "for the cost estimate" },
+      { id = "Pricing.Currency", type = "text", label = "Currency", value = "ILS", help = "3-letter code, e.g. ILS / JOD / USD / EUR" },
+    },
+  },
+}
+
+-- flattened id list (kept for the headless field-consistency test)
+NajjarShell.READ_IDS = {}
+for _, page in ipairs(NajjarShell.PAGES) do
+  for _, fld in ipairs(page.fields) do
+    NajjarShell.READ_IDS[#NajjarShell.READ_IDS + 1] = fld.id
+  end
+end
+
+-- machining layers that can carry a toolpath template (v0.9): drop a
+-- <layer>.ToolpathTemplate file into the gadget's toolpaths/ folder and the
+-- shell loads it after drawing - real one-click toolpaths
+NajjarShell.TEMPLATE_LAYERS = {
+  "CUT", "DRILL5_SHELF", "DRILL5_SHELF_FLIP", "DRILL_CABINEO", "POCKET_CABINEO",
+  "DRILL_HINGE", "DRILL_SLIDE", "LED_GROOVE", "BOX_GROOVE", "DRILL_DOWEL", "ETCH",
 }
 
 --------------------------------------------------------------------------------
@@ -62,8 +108,26 @@ local function checkbox(label, id, checked, help)
     help or "", label, id, checked and " checked" or "")
 end
 
-function NajjarShell.build_html()
-  return [[
+local function select_box(label, id, options, help)
+  local opts = {}
+  for _, o in ipairs(options) do
+    opts[#opts + 1] = string.format('<option value="%s">%s</option>', o[1], o[2])
+  end
+  return string.format(
+    '<tr><td title="%s"><label>%s</label></td>' ..
+    '<td><select id="%s" class="Field">%s</select></td></tr>',
+    help or "", label, id, table.concat(opts))
+end
+
+---
+-- Build wizard page HTML. build_html(n) -> page n only (what VCarve shows);
+-- build_html() -> all pages concatenated (what the headless test checks).
+---
+function NajjarShell.build_html(page)
+  local pages = page and { NajjarShell.PAGES[page] } or NajjarShell.PAGES
+  local out = {}
+  for _, pg in ipairs(pages) do
+    out[#out + 1] = [[
 <style>
 body     { font-family: Segoe UI, Arial; font-size: 13px; }
 h2       { font-size: 15px; margin: 14px 0 6px 0; }
@@ -72,59 +136,32 @@ td       { padding: 3px 6px; }
 .Field   { width: 100%%; box-sizing: border-box; }
 .Help    { color: #666; font-size: 11px; }
 </style>
-<h2>Najjar Pro ]] .. VERSION .. [[ &mdash; ]] .. [[box cabinet</h2>
+<h2>Najjar Pro ]] .. VERSION .. [[ &mdash; ]] .. pg.title .. [[</h2>
 <table>
-]] ..
-field("Project name", "Project.Name", "najjar-job", "appears in file names and the BOM") ..
-field("Cabinet ID", "Cabinet.ID", "C1", "prefix for every part label") ..
-field("Width", "Cabinet.Width", "900", "outside width") ..
-field("Height", "Cabinet.Height", "900", "outside height") ..
-field("Depth", "Cabinet.Depth", "550", "outside depth") ..
-field('Panel thickness (mm)', "Cabinet.Thickness", "18", "box panel thickness") ..
-[[
-</table>
-<h2>Construction</h2>
-<table>
-]] ..
-[[
-<tr><td title="mm or in"><label>Units</label></td>
-<td><select id="Cabinet.Units" class="Field">
-<option value="mm">mm</option>
-<option value="in">inch</option>
-</select></td></tr>
-<tr><td title="back panel construction"><label>Back</label></td>
-<td><select id="Cabinet.Back" class="Field">
-<option value="grooved">grooved (in side grooves)</option>
-<option value="nailed">nailed on rear</option>
-</select></td></tr>
-]] ..
-field("Adjustable shelves", "Cabinet.Shelves", "2", "shelf count (0 = none)") ..
-checkbox("Shelves adjustable (pin rows)", "Cabinet.Adjustable", true, "system-32 pin ladders on the sides") ..
-checkbox("Door zone (full height)", "Cabinet.DoorZone", false, "generates doors with hinge drilling") ..
-field("Door count (1-4)", "Cabinet.DoorCount", "2", "doors across the cabinet width") ..
-[[
-</table>
-<h2>Hardware</h2>
-<table>
-]] ..
-checkbox("Cabineo 12 connectors", "Hardware.Connector", true, "O15 pocket + O5 drill at every box joint") ..
-checkbox("Shelf pins (system 32)", "Hardware.Pins", true, "O5 holes, 32 mm pitch") ..
-checkbox("Cup hinges (O35)", "Hardware.Hinges", true, "hinge drilling on doors") ..
-[[
-</table>
-<h2>Output</h2>
-<table>
-<tr><td title="labels and BOM language"><label>Language</label></td>
-<td><select id="Panel.Language" class="Field">
-<option value="en">English</option>
-<option value="he">Hebrew</option>
-<option value="ar">Arabic</option>
-</select></td></tr>
-</table>
-<p class="Help">Parts are drawn on layers (CUT, DRILL5_SHELF, POCKET_CABINEO,
-DRILL_CABINEO, DRILL_HINGE, ETCH). Assign your toolpath templates per layer
-afterwards. Labels and the full BOM land in the job folder.</p>
 ]]
+    for _, fld in ipairs(pg.fields) do
+      if fld.type == "check" then
+        out[#out + 1] = checkbox(fld.label, fld.id, fld.value, fld.help)
+      elseif fld.type == "select" then
+        out[#out + 1] = select_box(fld.label, fld.id, fld.options or {}, fld.help)
+      else
+        out[#out + 1] = field(fld.label, fld.id, tostring(fld.value or ""), fld.help)
+      end
+    end
+    out[#out + 1] = [[
+</table>
+]]
+    if pg.title == "Hardware & boards" then
+      out[#out + 1] = [[
+<p class="Help">Parts are drawn on layers (CUT, DRILL5_SHELF, POCKET_CABINEO,
+DRILL_CABINEO, DRILL_HINGE, ...). Save one toolpath template per layer as
+toolpaths/&lt;layer&gt;.ToolpathTemplate in the gadget folder and they load
+automatically. Labels, BOM, nesting sheets and the 3D viewer land in the
+gadget's out/ folder.</p>
+]]
+    end
+  end
+  return table.concat(out, "\n")
 end
 
 --------------------------------------------------------------------------------
@@ -140,16 +177,33 @@ function NajjarShell.assemble_spec(d)
   local shelves = math.max(0, math.floor(num("Cabinet.Shelves", 0) + 0.5))
   local door_zone = d["Cabinet.DoorZone"] == true
   local door_count = math.max(1, math.min(4, math.floor(num("Cabinet.DoorCount", 2) + 0.5)))
+  local drawer_zone = d["Cabinet.DrawerZone"] == true
+  local drawer_count = math.max(1, math.min(6, math.floor(num("Cabinet.DrawerCount", 2) + 0.5)))
+  local plinth_on = d["Cabinet.Plinth"] == true
 
   local hardware = {}
   if d["Hardware.Connector"] == true then hardware.connector = "cabineo_12" end
   if d["Hardware.Pins"] == true then hardware.shelf_pins = "shelf_pin_5" end
   if d["Hardware.Hinges"] == true then hardware.hinges = "hinge_cup_35" end
 
+  local currency = tostring(d["Pricing.Currency"] or "ILS"):upper():gsub("[^A-Z]", "")
+  if currency == "" or #currency > 5 then currency = "ILS" end
+
   local raw = {
     project = (d["Project.Name"] ~= nil and d["Project.Name"] ~= "") and d["Project.Name"] or "najjar-job",
     units = (d["Cabinet.Units"] == "in") and "in" or "mm",
     panel_material = { thickness = num("Cabinet.Thickness", 18.0) },
+    sheet = {
+      width = num("Sheet.Width", 1220.0),
+      height = num("Sheet.Height", 2440.0),
+      kerf = num("Sheet.Kerf", 4.0),
+      margin = num("Sheet.Margin", 8.0),
+    },
+    pricing = {
+      board_per_m2 = num("Pricing.Board", 45.0),
+      edge_per_m = num("Pricing.Edge", 2.0),
+      currency = currency,
+    },
     cabinets = {
       {
         id = (d["Cabinet.ID"] ~= nil and d["Cabinet.ID"] ~= "") and d["Cabinet.ID"] or "C1",
@@ -160,26 +214,77 @@ function NajjarShell.assemble_spec(d)
           panel_layout = "top_bottom_between_sides",
           back = { type = (d["Cabinet.Back"] == "nailed") and "nailed" or "grooved",
                    thickness = 9.0, groove_depth = 8.0, groove_offset = 10.0 },
+          plinth = plinth_on and {
+            height = math.max(40, math.min(400, num("Cabinet.PlinthHeight", 100))),
+            recess = 50.0, thickness = 16.0,
+          } or nil,
         },
         hardware = hardware,
       },
     },
   }
 
-  -- shelves: behind the doors when a door zone exists, else a plain row
+  -- zones: drawers at the bottom (250 mm each), doors above, else open ------
   local cab = raw.cabinets[1]
   local H = cab.height
-  if door_zone then
-    cab.zones = {
-      { type = "door", from = 0, to = H,
-        doors = { count = door_count },
-        shelves = { count = shelves, adjustable = d["Cabinet.Adjustable"] == true } },
+  local zones = {}
+  local drawer_top = 0
+
+  if drawer_zone then
+    local per = 250
+    local top = math.min(drawer_count * per, math.max(per, H - 150))
+    local fit = math.max(1, math.floor(top / per + 0.001))
+    drawer_top = fit * per
+    zones[#zones + 1] = {
+      type = "drawers", from = 0, to = drawer_top,
+      drawers = { count = fit, box = true },
     }
+  end
+
+  if door_zone then
+    zones[#zones + 1] = {
+      type = "door", from = drawer_top, to = H,
+      doors = { count = door_count },
+      shelves = { count = shelves, adjustable = d["Cabinet.Adjustable"] == true },
+    }
+    cab.zones = zones
+  elseif #zones > 0 then
+    if drawer_top < H - 50 then
+      zones[#zones + 1] = {
+        type = "open", from = drawer_top, to = H,
+        shelves = { count = shelves, adjustable = d["Cabinet.Adjustable"] == true },
+      }
+    end
+    cab.zones = zones
   elseif shelves > 0 then
     cab.shelves = { count = shelves, adjustable = d["Cabinet.Adjustable"] == true }
   end
 
   return raw
+end
+
+---
+-- Load every toolpaths/<layer>.ToolpathTemplate that exists in the gadget
+-- folder through the real Vectric ToolpathManager (verified against public
+-- gadgets: LoadToolpathTemplate rebuilds a toolpath from the template file).
+-- Returns loaded[], failed[] layer names.
+---
+function NajjarShell.load_toolpath_templates(base, manager)
+  local loaded, failed = {}, {}
+  for _, layer in ipairs(NajjarShell.TEMPLATE_LAYERS) do
+    local path = base .. "/toolpaths/" .. layer .. ".ToolpathTemplate"
+    local f = io.open(path, "rb")
+    if f then
+      f:close()
+      local ok = pcall(function() return manager:LoadToolpathTemplate(path) end)
+      if ok then
+        loaded[#loaded + 1] = layer
+      else
+        failed[#failed + 1] = layer
+      end
+    end
+  end
+  return loaded, failed
 end
 
 --------------------------------------------------------------------------------
@@ -222,21 +327,22 @@ function main(script_path)
     return false
   end
 
-  -- 3. dialog ----------------------------------------------------------------
-  local html = NajjarShell.build_html()
-  local dialog = HTML_Dialog(true, html, 470, 640, "Najjar Pro " .. VERSION)
-  if not dialog:ShowDialog() then
-    return true -- user cancelled
-  end
-
+  -- 3. wizard: three pages (cabinet -> interior -> hardware & boards) ---------
+  -- OK advances to the next page, Cancel stops quietly
   local d = {}
-  for _, id in ipairs(NajjarShell.READ_IDS) do
-    if id == "Cabinet.Adjustable" or id == "Cabinet.DoorZone"
-       or id == "Hardware.Connector" or id == "Hardware.Pins"
-       or id == "Hardware.Hinges" then
-      d[id] = dialog:GetCheckBox(id)
-    else
-      d[id] = dialog:GetTextField(id)
+  for pi, page in ipairs(NajjarShell.PAGES) do
+    local dialog = HTML_Dialog(true, NajjarShell.build_html(pi), 470, 640,
+      string.format("Najjar Pro %s  -  %s (step %d of %d)",
+                    VERSION, page.title, pi, #NajjarShell.PAGES))
+    if not dialog:ShowDialog() then
+      return true -- user cancelled
+    end
+    for _, fld in ipairs(page.fields) do
+      if fld.type == "check" then
+        d[fld.id] = dialog:GetCheckBox(fld.id)
+      else
+        d[fld.id] = dialog:GetTextField(fld.id)
+      end
     end
   end
 
@@ -339,12 +445,30 @@ function main(script_path)
                       check_line .. "\n" .. cost_line)
   end)
 
+  -- 8. toolpath templates (optional: one-click toolpaths, v0.9) ------------------
+  local tp_note = ""
+  if ToolpathManager then
+    local ok_tm, tm = pcall(ToolpathManager)
+    if ok_tm and tm then
+      local loaded, failed = NajjarShell.load_toolpath_templates(base, tm)
+      if #loaded > 0 then
+        tp_note = "\nToolpaths created from templates:\n" .. table.concat(loaded, ", ") ..
+                  "\n(answer \"No\" if asked to apply templates to all sheets)"
+      elseif #failed > 0 then
+        tp_note = "\nSome toolpath templates failed to load - see the toolpaths folder."
+      else
+        tp_note = "\nNo toolpath templates yet. Save one per layer as\n" ..
+                  "toolpaths/<layer>.ToolpathTemplate in the gadget folder\n" ..
+                  "for one-click toolpaths (see toolpaths/README.md)."
+      end
+    end
+  end
+
   local total_qty = 0
   for _, p in ipairs(parts) do total_qty = total_qty + p.qty end
   local area = geom.total_area(parts)
   DisplayMessageBox(string.format(
-    "Najjar Pro: %d unique parts (%d total), %.2f m2 of panel.\n" ..
-    "Assign your toolpath templates per layer, then post.",
-    #parts, total_qty, area))
+    "Najjar Pro: %d unique parts (%d total), %.2f m2 of panel.%s",
+    #parts, total_qty, area, tp_note))
   return true
 end
